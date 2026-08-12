@@ -1,0 +1,156 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import Header from "../../common/Header.jsx";
+import Footer from "../../common/Footer.jsx";
+import Scroll from "../../common/Scroll.jsx";
+import Card from "../../common/Card.jsx";
+
+export default function Magazines() {
+  const [magazines, setMagazines] = useState([]);
+  const [sortedMagazines, setSortedMagazines] = useState([]);
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Fix image path for magazines (same as articles)
+  function fixMagazineImage(imgPath) {
+    if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
+      return "/Aiss/backend/" + imgPath;
+    }
+    return imgPath || "assets/magazine/placeholder.webp";
+  }
+
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
+  useEffect(() => {
+    async function loadMagazines() {
+      try {
+        const response = await fetch("/api/get_magazines.php");
+        const data = await response.json();
+        if (data.success && data.magazines) {
+          setMagazines(data.magazines);
+        }
+      } catch (error) {
+        console.error("Error fetching magazines:", error);
+      }
+    }
+    loadMagazines();
+  }, []);
+
+  useEffect(() => {
+    let sorted = [...magazines];
+    if (sortOrder === "newest") {
+      sorted.sort((a, b) => b.id - a.id);
+    } else {
+      sorted.sort((a, b) => a.id - b.id);
+    }
+    setSortedMagazines(sorted);
+  }, [magazines, sortOrder]);
+
+  async function deleteMagazine(id) {
+    if (!confirm("هل أنت متأكد من حذف هذه المجلة؟")) return;
+    try {
+      const formData = new FormData();
+      formData.append("magazine_id", id);
+      const response = await fetch("/api/delete_magazine.php", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("تم الحذف بنجاح");
+        setMagazines((prev) => prev.filter((m) => m.id != id));
+      } else {
+        alert("فشل الحذف: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("حدث خطأ في الاتصال بالسيرفر");
+    }
+  }
+
+  const latestMagazines = sortedMagazines.slice(0, 4);
+
+  return (
+    <>
+      <Header />
+      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.5">
+        <img src="assets/imge/0004.jpg" alt="magazine-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+        <div className="logo-text">
+          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">المجلات</p>
+        </div>
+      </div>
+      <main className="page-content">
+
+        {/* أحدث الإصدارات */}
+        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+          <p>
+            <span className="text-accent">آخر</span> ما تم إصدارة
+          </p>
+        </div>
+
+        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+          {latestMagazines.map((item, idx) => (
+            <Card
+              key={item.id ?? idx}
+              id={item.id ?? idx}
+              title={item.title}
+              image={fixMagazineImage(item.cover_image)}
+              fallbackImage="assets/magazine/placeholder.webp"
+              href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
+              btnText="عرض المجلة"
+              editLink={isAdmin ? `edit_magazine.html?id=${item.id}` : null}
+              onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
+            />
+          ))}
+        </div>
+
+        {/* جميع الإصدارات */}
+        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+          <p>
+            <span className="text-accent">إصدارات</span> مجلات السلامة العربية
+          </p>
+        </div>
+
+        <div className="max-w-fit mx-auto my-[30px_auto_20px] flex justify-center items-center gap-2.5 bg-white px-5 py-2.5 rounded-[50px] shadow-[0_8px_25px_rgba(0,0,0,0.06)] border border-[#eee]">
+          <label htmlFor="magazines-sort" className="font-bold text-[15px] whitespace-nowrap">ترتيب المجلات:</label>
+          <select
+            id="magazines-sort"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="px-3.75 py-1.5 text-[14px] appearance-none bg-white rounded-[30px] border border-black font-bold text-accent cursor-pointer outline-none transition-all duration-300 ease-in-out hover:bg-[#ecebeb]"
+            style={{
+              backgroundImage: "url(\"data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23e4293a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "left 2px center"
+            }}
+          >
+            <option value="newest">من الأحدث للأقدم</option>
+            <option value="oldest">من الأقدم للأحدث</option>
+          </select>
+        </div>
+
+        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+          {sortedMagazines.map((item, idx) => (
+            <Card
+              key={item.id ?? idx}
+              id={item.id ?? idx}
+              title={item.title}
+              image={fixMagazineImage(item.cover_image)}
+              fallbackImage="assets/magazine/placeholder.webp"
+              href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
+              btnText="عرض المجلة"
+              editLink={isAdmin ? `edit_magazine.html?id=${item.id}` : null}
+              onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
+            />
+          ))}
+        </div>
+      </main>
+      <Scroll />
+      <Footer />
+    </>
+  );
+}

@@ -88,9 +88,9 @@ export default function Actors() {
       </div>
       <main className="page-content">
 
-        <div className="relative max-w-375 my-5 mx-auto border border-[#ddd] overflow-hidden">
+        <div className="relative max-w-300 my-5 mx-auto border border-[#ddd] overflow-hidden">
           <img
-            src="src/assets/assets/Actors/newMap.png"
+            src="assets/Actors/map.png"
             alt="map"
             loading="lazy"
             className="w-full h-auto block shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
@@ -116,40 +116,48 @@ export default function Actors() {
         {/* نافذة منبثقة عند اختيار دولة من الخريطة */}
         {selectedCountry && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-1000 p-4" onClick={() => setSelectedCountry(null)}>
-            <div className="actors-modal-content w-full max-w-85 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-              <h2 className="mb-3">الممثلين في {selectedCountry}</h2>
-              <div id="actorsList">
-                {countryActors.map((actor) => (
-                  <div
-                    key={actor.name}
-                    className="actor-link"
-                    onClick={() => handleActorClick(actor.name)}
-                  >
-                    {actor.name}
-                  </div>
-                ))}
+            <div
+              className="bg-white w-full max-w-85 max-h-[80vh] overflow-y-auto p-3.75 rounded-[15px] border border-[#ddd] text-center shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="mb-3 font-bold">الممثلين في {selectedCountry}</h2>
+              {countryActors.map((actor) => (
+                <div
+                  key={actor.name}
+                  className="block p-3 m-2 bg-[rgba(41,128,185,0.1)] rounded-[10px] text-[#2c3e50] font-medium cursor-pointer hover:bg-[#2980b9] hover:text-white hover:scale-[1.05] transition-all duration-300"
+                  onClick={() => handleActorClick(actor.name)}
+                >
+                  {actor.name}
+                </div>
+              ))}
+              <div className="mt-3.75 cursor-pointer text-[#e74c3c] font-bold text-[13px] underline" onClick={() => setSelectedCountry(null)}>
+                إغلاق
               </div>
-              <div className="close-modal" onClick={() => setSelectedCountry(null)}>إغلاق</div>
             </div>
           </div>
         )}
 
-        <div className="actors-container max-w-300 mx-auto grid grid-cols-[repeat(auto-fill,minmax(550px,1fr))] gap-6.25 justify-items-center mt-10 mb-7.5" style={{ maxWidth: "1200px" }}>
+        {/* شبكة الكروت - 3 في كل صف */}
+        <div className="max-w-300 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mt-10 mb-7.5 px-5">
           {visibleActors.map((actor, idx) => (
-            <div key={idx} className="card w-full max-w-95 bg-white rounded-xl border border-[#e0e0e0] overflow-hidden transition-transform duration-300 ease-in-out hover:-translate-y-1.25 hover:shadow-[0_10px_20px_rgba(0,0,0,0.1)] flex flex-col" data-country={actor.country}>
-              <div className="actor-image-container h-75 bg-white flex items-center justify-center p-3.75 border-b border-[#eee]">
+            <div
+              key={idx}
+              className="card w-full max-w-95 bg-white rounded-xl border border-[#e0e0e0] overflow-hidden transition-transform duration-300 ease-in-out hover:-translate-y-1.25 hover:shadow-[0_10px_20px_rgba(0,0,0,0.1)] flex flex-col"
+              data-country={actor.country}
+            >
+              <div className="h-75 bg-white flex items-center justify-center p-3.75 border-b border-[#eee]">
                 <img src={actor.img} alt={actor.name} loading="lazy" className="w-full h-full object-cover" />
               </div>
-              <div className="content p-5 grow text-right">
-                <span className="country-tag bg-[#e1f5fe] text-primary px-2.5 py-1 rounded-[20px] text-[12px] font-bold inline-block text-center mb-2.5">{actor.country}</span>
+              <div className="p-5 grow text-right">
+                <span className="bg-[#e1f5fe] text-primary px-2.5 py-1 rounded-[20px] text-[12px] font-bold inline-block text-center mb-2.5">{actor.country}</span>
                 <h3 className="m-0 mb-2.5 text-[18px] text-[#2c3e50] leading-[1.4] text-right">{actor.name}</h3>
                 <p className="m-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.desc}</p>
                 {actor.extra && (
-                  <p className="extra-desc mt-2.5 mb-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.extra}</p>
+                  <p className="mt-2.5 mb-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.extra}</p>
                 )}
-                <div className="contact-info mt-2.5 text-right">
-                  <span className="label text-[12px] font-bold text-[#888] block text-right">البريد الإلكتروني:</span>
-                  <a href={`mailto:${actor.email}`} className="email-link block text-[#2980b9] text-[13px] no-underline text-right break-all">
+                <div className="mt-2.5 text-right">
+                  <span className="text-[12px] font-bold text-[#888] block text-right">البريد الإلكتروني:</span>
+                  <a href={`mailto:${actor.email}`} className="block text-[#2980b9] text-[13px] no-underline text-right break-all">
                     {actor.email}
                   </a>
                 </div>

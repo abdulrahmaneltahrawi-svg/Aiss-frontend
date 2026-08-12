@@ -52,17 +52,17 @@ export default function Conferences() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">
+          <p className="page-hero-title">
             {currentConference ? currentConference.title : "مؤتمرات السلامة العربية"}
           </p>
         </div>
       </div>
       <main className="page-content">
 
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             {currentConference ? (
               <span>
@@ -75,7 +75,7 @@ export default function Conferences() {
         </div>
 
         {/* شريط تنقل بين المؤتمرات */}
-        <div className="max-w-fit mx-auto my-[30px_auto_20px] flex justify-center items-center gap-2.5 bg-white px-5 py-2.5 rounded-[50px] shadow-[0_8px_25px_rgba(0,0,0,0.06)] border border-[#eee] flex-wrap">
+        <div className="filter-bar flex-wrap">
           <Link
             to="/conference"
             className={`px-3 py-1.25 text-[13px] no-underline rounded-[30px] border font-bold transition-all duration-300 ${
@@ -105,7 +105,7 @@ export default function Conferences() {
           })}
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto" style={{ minHeight: "300px" }}>
+        <div className="cards-grid gap-7" style={{ minHeight: "300px" }}>
           {filteredConferences.length === 0 ? (
             <p className="text-center w-full p-12">
               جاري تحميل المؤتمرات...

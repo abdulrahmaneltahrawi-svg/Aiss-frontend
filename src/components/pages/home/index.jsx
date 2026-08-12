@@ -281,7 +281,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
         </div>
 
         {/* أحدث الإصدارات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             <span className="text-accent">احدث </span>اصدارات المجلة  
           </p>
@@ -289,7 +289,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
 
         <div
           id="home-magazines-grid"
-          className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto"
+          className="cards-grid"
         >
           {magazineCards}
         </div>
@@ -301,7 +301,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
         </div>
 
         {/* أحدث الإصدارات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             <span className="text-accent">احدث </span>اصدارات المدونات  
           </p>
@@ -309,7 +309,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
 
         <div
           id="blogs-grid"
-          className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto"
+          className="cards-grid"
         >
           {blogCards}
         </div>

@@ -80,10 +80,10 @@ export default function Actors() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src="assets/imge/0005.jpg" alt="store-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0005.jpg" alt="store-pic" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">الممثلين</p>
+          <p className="page-hero-title">الممثلين</p>
         </div>
       </div>
       <main className="page-content">

@@ -55,10 +55,10 @@ export default function Clients() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">الشركاء</p>
+          <p className="page-hero-title">الشركاء</p>
         </div>
       </div>
       <main className="page-content">

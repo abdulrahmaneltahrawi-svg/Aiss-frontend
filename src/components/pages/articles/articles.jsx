@@ -117,22 +117,22 @@ export default function Articles() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src="assets/imge/0006.jpg" alt="blogs-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0006.jpg" alt="blogs-pic" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">المقالات</p>
+          <p className="page-hero-title">المقالات</p>
         </div>
       </div>
       <main className="page-content">
 
         {/* أحدث الإصدارات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             <span className="text-accent">آخر</span> ما تم إصدارة
           </p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-10.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+        <div className="cards-grid gap-10.5">
           {latestBlogs.map((item, idx) => {
             const slug = slugify(item.title);
             const idParam =
@@ -160,11 +160,11 @@ export default function Articles() {
         </div>
 
         {/* جميع المدونات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>كتابات و مدونات</p>
         </div>
 
-        <div className="max-w-fit mx-auto my-[30px_auto_20px] flex justify-center items-center gap-1.25 bg-white px-6.25 py-2.5 rounded-[50px] shadow-[0_8px_25px_rgba(0,0,0,0.06)] border border-[#eee]">
+        <div className="filter-bar gap-1.25 px-6.25">
           <label htmlFor="blog-category" className="font-bold text-[#666] text-[15px] whitespace-nowrap p-2">التصنيف:</label>
           <select
             id="blog-category"
@@ -188,7 +188,7 @@ export default function Articles() {
 
         <div
           id="blogs-grid"
-          className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto"
+          className="cards-grid"
           style={{ minHeight: "600px" }}
         >
           {displayedBlogs.length === 0 ? (

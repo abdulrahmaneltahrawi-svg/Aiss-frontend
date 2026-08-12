@@ -149,7 +149,7 @@ export default function FlipBook() {
     <>
       <Header />
       <main className="page-content" style={{ marginTop: "100px" }}>
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>{title || (type === "booklet" ? "كتيب السلامة" : "المجلة")}</p>
         </div>
 

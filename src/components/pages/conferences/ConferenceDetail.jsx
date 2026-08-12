@@ -77,19 +77,19 @@ export default function ConferenceDetail() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src={conference.image} alt="hero-logo" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src={conference.image} alt="hero-logo" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">{conference.title}</p>
+          <p className="page-hero-title">{conference.title}</p>
         </div>
       </div>
       <main className="page-content">
 
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-2 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>{conference.title}</p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto" style={{ minHeight: "300px" }}>
+        <div className="cards-grid gap-7" style={{ minHeight: "300px" }}>
           <div className="card1 max-w-100 mx-auto" data-aos="fade-up">
             <img
               src={conference.image}

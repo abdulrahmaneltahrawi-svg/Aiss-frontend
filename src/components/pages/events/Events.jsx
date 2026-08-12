@@ -47,15 +47,15 @@ export default function Events() {
       <Header />
       <main className="page-content">
         {/* Hero Section */}
-        <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-          <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+        <div className="page-hero">
+          <img src="assets/imge/0006.jpg" alt="hero-logo" loading="lazy" className="page-hero-bg" />
           <div className="logo-text">
-            <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">مسابقات السلامة العربية</p>
+            <p className="page-hero-title">مسابقات السلامة العربية</p>
           </div>
         </div>
 
         {/* Section Title */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>مسابقات السلامة العربية</p>
         </div>
 
@@ -100,10 +100,10 @@ export default function Events() {
           </div>
 
           {/* دورات المسابقة - 4 كروت فقط */}
-          <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-10">
+          <div className="section-title-bar mt-10">
             <p>دورات مسابقة السلامة العربية</p>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+          <div className="cards-grid">
             {COMPETITIONS.map((item) => (
               <Card
                 key={item.id}

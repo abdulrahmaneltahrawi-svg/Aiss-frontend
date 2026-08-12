@@ -12,15 +12,15 @@ export default function Medal() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-[400px] flex justify-center items-center overflow-hidden mt-[85px]">
-        <img src="assets/imge/0006.jpg" alt="medal-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0006.jpg" alt="medal-pic" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">وسام السلامة العربي</p>
+          <p className="page-hero-title">وسام السلامة العربي</p>
         </div>
       </div>
       <main className="page-content">
 
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-[5px] font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>وسام السلامة العربي</p>
         </div>
 

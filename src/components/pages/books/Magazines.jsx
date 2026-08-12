@@ -77,22 +77,22 @@ export default function Magazines() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.5">
-        <img src="assets/imge/0004.jpg" alt="magazine-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="assets/imge/0004.jpg" alt="magazine-pic" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">المجلات</p>
+          <p className="page-hero-title">المجلات</p>
         </div>
       </div>
       <main className="page-content">
 
         {/* أحدث الإصدارات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             <span className="text-accent">آخر</span> ما تم إصدارة
           </p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+        <div className="cards-grid">
           {latestMagazines.map((item, idx) => (
             <Card
               key={item.id ?? idx}
@@ -109,13 +109,13 @@ export default function Magazines() {
         </div>
 
         {/* جميع الإصدارات */}
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-1.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>
             <span className="text-accent">إصدارات</span> مجلات السلامة العربية
           </p>
         </div>
 
-        <div className="max-w-fit mx-auto my-[30px_auto_20px] flex justify-center items-center gap-2.5 bg-white px-5 py-2.5 rounded-[50px] shadow-[0_8px_25px_rgba(0,0,0,0.06)] border border-[#eee]">
+        <div className="filter-bar">
           <label htmlFor="magazines-sort" className="font-bold text-[15px] whitespace-nowrap">ترتيب المجلات:</label>
           <select
             id="magazines-sort"
@@ -133,7 +133,7 @@ export default function Magazines() {
           </select>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-7.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+        <div className="cards-grid">
           {sortedMagazines.map((item, idx) => (
             <Card
               key={item.id ?? idx}

@@ -56,10 +56,10 @@ export default function Store() {
   return (
     <>
       <Header />
-      <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25">
-        <img src="/assets/imge/0005.jpg" alt="store-pic" loading="lazy" className="absolute inset-0 w-full h-full object-cover -z-10" />
+      <div className="page-hero">
+        <img src="/assets/imge/0005.jpg" alt="store-pic" loading="lazy" className="page-hero-bg" />
         <div className="logo-text">
-          <p className="text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)]">المتجر</p>
+          <p className="page-hero-title">المتجر</p>
         </div>
       </div>
       <main className="page-content">
@@ -102,11 +102,11 @@ export default function Store() {
           </div>
         )}
 
-        <div className="flex text-[25px] justify-center px-5 py-5 gap-2.25 font-bold border-t-[5px] border-accent bg-white mt-5">
+        <div className="section-title-bar">
           <p>منتجات المتجر</p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,270px)] gap-10.5 p-[40px_5%] justify-center justify-items-center max-w-350 mx-auto">
+        <div className="cards-grid gap-10.5">
           {products.map((item) => (
             <Card
               key={item.id}
@@ -116,7 +116,7 @@ export default function Store() {
               fallbackImage={FALLBACK_IMG}
               btnText="إضافة للسلة"
               price={`${item.price} د.ا`}
-              onButtonClick={() => addToCart(item)}l
+              onButtonClick={() => addToCart(item)}
             />
           ))}
         </div>

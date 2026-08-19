@@ -6,12 +6,31 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    port: 5174,
+    strictPort: true,
     proxy: {
-      '/api': {
-        target: 'http://localhost:80',
-        changeOrigin: true,
-        rewrite: (path) => `/Aiss/backend${path}`
+      // Laravel Sanctum & API proxy
+      '/sanctum': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
       },
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
+      },
+      '/storage': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
+      },
+      '/login': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
+      },
+      '/logout': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
+      },
+      // Legacy PHP API proxy
       '/Aiss': {
         target: 'http://localhost:80',
         changeOrigin: true

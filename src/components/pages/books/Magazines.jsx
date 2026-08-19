@@ -7,6 +7,16 @@ import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 import Card from "../../common/Card.jsx";
 
+const API_URL = "";
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
 export default function Magazines() {
   const [magazines, setMagazines] = useState([]);
   const [sortedMagazines, setSortedMagazines] = useState([]);
@@ -15,10 +25,12 @@ export default function Magazines() {
 
   // Fix image path for magazines (same as articles)
   function fixMagazineImage(imgPath) {
-    if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-      return "/Aiss/backend/" + imgPath;
-    }
-    return imgPath || "assets/magazine/placeholder.webp";
+    if (!imgPath) return "assets/magazine/placeholder.webp";
+    if (imgPath.startsWith("http")) return imgPath;
+    if (imgPath.startsWith("/Aiss")) return imgPath;
+    if (imgPath.startsWith("/")) return imgPath;
+    // Images stored in backend/assets/uploads/
+    return "/Aiss/backend/" + imgPath;
   }
 
   useEffect(() => {
@@ -28,16 +40,34 @@ export default function Magazines() {
   useEffect(() => {
     async function loadMagazines() {
       try {
-        const response = await fetch("/api/get_magazines.php");
+        const response = await fetch(`${API_URL}/api/magazines`);
         const data = await response.json();
-        if (data.success && data.magazines) {
-          setMagazines(data.magazines);
+        const items = data.magazines || data.data || (Array.isArray(data) ? data : []);
+        if (items.length > 0) {
+          setMagazines(items);
         }
       } catch (error) {
         console.error("Error fetching magazines:", error);
       }
     }
     loadMagazines();
+  }, []);
+
+  // Check if user is admin
+  useEffect(() => {
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const user = data.user || data;
+        if (user && (user.role === "admin" || user.can_add_article == 1)) {
+          setIsAdmin(true);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -53,18 +83,28 @@ export default function Magazines() {
   async function deleteMagazine(id) {
     if (!confirm("هل أنت متأكد من حذف هذه المجلة؟")) return;
     try {
-      const formData = new FormData();
-      formData.append("magazine_id", id);
-      const response = await fetch("/api/delete_magazine.php", {
-        method: "POST",
-        body: formData,
+      // Get CSRF token
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      const response = await fetch(`${API_URL}/api/magazines/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       });
       const data = await response.json();
-      if (data.success) {
+      if (response.ok) {
         alert("تم الحذف بنجاح");
         setMagazines((prev) => prev.filter((m) => m.id != id));
       } else {
-        alert("فشل الحذف: " + data.message);
+        alert("فشل الحذف: " + (data.message || "خطأ غير معروف"));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -102,7 +142,7 @@ export default function Magazines() {
               fallbackImage="assets/magazine/placeholder.webp"
               href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
               btnText="عرض المجلة"
-              editLink={isAdmin ? `edit_magazine.html?id=${item.id}` : null}
+              editLink={isAdmin ? `/admin/edit-magazine/${item.id}` : null}
               onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
             />
           ))}
@@ -143,7 +183,7 @@ export default function Magazines() {
               fallbackImage="assets/magazine/placeholder.webp"
               href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
               btnText="عرض المجلة"
-              editLink={isAdmin ? `edit_magazine.html?id=${item.id}` : null}
+              editLink={isAdmin ? `/admin/edit-magazine/${item.id}` : null}
               onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
             />
           ))}

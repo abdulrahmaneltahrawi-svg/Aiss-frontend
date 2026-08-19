@@ -36,7 +36,8 @@ import Add_article from "./components/Admin/Add_article.jsx";
 import Add_magazine from "./components/Admin/Add_magazine.jsx";
 import Add_book from "./components/Admin/Add_book.jsx";
 import Add_tag from "./components/Admin/Add_tag.jsx";
-import Add_certificate from "./components/Admin/Add_certificate.jsx";
+import Add_Accred from "./components/Admin/Add_Accred.jsx";
+import Add_certificates from "./components/Admin/Add_certificates.jsx";
 import Edit_article from "./components/Admin/Edit_article.jsx";
 import Edit_book from "./components/Admin/Edit_book.jsx";
 import Edit_magazine from "./components/Admin/Edit_magazine.jsx";
@@ -68,7 +69,7 @@ function App() {
         <Route path="/companies" element={<Clients />} />
         <Route path="/actors" element={<Actors />} />
         <Route path="/store" element={<Store />} />
-        <Route path="/store/view" element={<View />} />
+        <Route path="/store/view/:id" element={<View />} />
         <Route path="/store/payment" element={<Payment />} />
         <Route path="/about" element={<About />} />
         <Route path="/inquiries" element={<Inquiries />} />
@@ -83,10 +84,11 @@ function App() {
         <Route path="/admin/add-magazine" element={<Add_magazine />} />
         <Route path="/admin/add-book" element={<Add_book />} />
         <Route path="/admin/add-tag" element={<Add_tag />} />
-        <Route path="/admin/add-certificate" element={<Add_certificate />} />
-        <Route path="/admin/edit-article" element={<Edit_article />} />
-        <Route path="/admin/edit-book" element={<Edit_book />} />
-        <Route path="/admin/edit-magazine" element={<Edit_magazine />} />
+        <Route path="/admin/add-accred" element={<Add_Accred />} />
+        <Route path="/admin/add-certificates" element={<Add_certificates />} />
+        <Route path="/admin/edit-article/:id" element={<Edit_article />} />
+        <Route path="/admin/edit-book/:id" element={<Edit_book />} />
+        <Route path="/admin/edit-magazine/:id" element={<Edit_magazine />} />
       </Routes>
     </BrowserRouter>
   );

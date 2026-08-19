@@ -5,83 +5,199 @@ function Add_tag() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [tagsList, setTagsList] = useState([]);
-
   useEffect(() => {
-    fetch("/api/check_user_auth.php", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((data) => {
-        if (!data.authenticated || !data.user || data.user.can_add_article != 1) {
-          window.location.href = "/";
-        }
-      });
+  checkAuth();
+  fetchTagsList();
+}, []);
+
+async function checkAuth() {
+  try {
+    const response = await fetch("/api/me", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    console.log("STATUS:", response.status);
+
+    const data = await response.json();
+
+    console.log("ME RESPONSE:", data);
+
+    if (!response.ok) {
+      console.log("Laravel يقول إن المستخدم غير مسجل دخول");
+      return;
+    }
+
+    console.log("USER:", data);
+  } catch (error) {
+    console.error("Auth error:", error);
+  }
+}
+
+async function fetchTagsList() {
+  try {
+    const response = await fetch("/api/tags", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    console.log("TAGS STATUS:", response.status);
+    console.log("TAGS RESPONSE:", data);
+
+    if (response.ok && Array.isArray(data)) {
+      setTagsList(data);
+    }
+  } catch (error) {
+    console.error("TAGS ERROR:", error);
+  }
+}
+
+async function saveTag() {
+  if (!name || !slug) {
+    alert("يرجى ملء جميع الحقول");
+    return;
+  }
+
+  try {
+    // 1. الحصول على CSRF Cookie من Laravel
+    await fetch("/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    // 2. قراءة XSRF-TOKEN
+    const xsrfCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("XSRF-TOKEN="));
+
+    if (!xsrfCookie) {
+      alert("لم يتم الحصول على CSRF Token");
+      console.log("Cookies:", document.cookie);
+      return;
+    }
+
+    const xsrfToken = decodeURIComponent(
+      xsrfCookie.split("=")[1]
+    );
+
+    console.log("XSRF TOKEN:", xsrfToken);
+
+    // 3. إرسال التاج إلى Laravel
+    const response = await fetch(
+      "/api/tags",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
+        body: JSON.stringify({
+          name: name,
+          slug: slug,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("POST STATUS:", response.status);
+    console.log("POST RESPONSE:", data);
+
+    if (!response.ok) {
+      alert(data.message || "فشل إضافة التاج");
+      return;
+    }
+
+    alert("تمت إضافة التاج بنجاح");
+
+    setName("");
+    setSlug("");
+
+    // تحديث التاجات
     fetchTagsList();
-  }, []);
 
-  async function fetchTagsList() {
-    try {
-      const response = await fetch("/api/get_tags.php");
-      const data = await response.json();
-      if (data.success && data.tags) {
-        setTagsList(data.tags);
-      }
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    }
+  } catch (error) {
+    console.error("ADD TAG ERROR:", error);
+    alert("حدث خطأ في الاتصال بالسيرفر");
+  }
+}
+
+async function deleteTag(tagId) {
+  if (!confirm("هل أنت متأكد من حذف هذا التاج؟")) {
+    return;
   }
 
-  async function saveTag() {
-    if (!name || !slug) {
-      alert("يرجى ملء جميع الحقول");
+  try {
+    // 1. الحصول على CSRF Cookie
+    await fetch(
+      "/sanctum/csrf-cookie",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    // 2. قراءة XSRF-TOKEN
+    const xsrfCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("XSRF-TOKEN="));
+
+    if (!xsrfCookie) {
+      alert("لم يتم الحصول على CSRF Token");
+      console.log("Cookies:", document.cookie);
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("slug", slug);
+    const xsrfToken = decodeURIComponent(
+      xsrfCookie.split("=")[1]
+    );
 
-    try {
-      const response = await fetch("/api/add_tag.php", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      alert(data.message);
-      if (data.success) {
-        setName("");
-        setSlug("");
-        fetchTagsList();
+    console.log("XSRF TOKEN:", xsrfToken);
+
+    // 3. حذف التاج
+    const response = await fetch(
+      `/api/tags/${tagId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("حدث خطأ في الاتصال بالسيرفر");
-    }
-  }
+    );
 
-  async function deleteTag(tagId) {
-    if (!confirm("هل أنت متأكد من حذف هذا الوسم؟ سيتم فك ارتباطه بجميع المقالات أيضاً.")) {
+    console.log("DELETE STATUS:", response.status);
+
+    const data = await response.json();
+
+    console.log("DELETE RESPONSE:", data);
+
+    if (!response.ok) {
+      alert(data.message || "فشل حذف التاج");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("tag_id", tagId);
+    alert("تم حذف التاج بنجاح");
 
-    try {
-      const response = await fetch("/api/delete_tag.php", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      if (data.success) {
-        alert("تم الحذف بنجاح");
-        fetchTagsList();
-      } else {
-        alert("فشل الحذف: " + data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting tag:", error);
-      alert("حدث خطأ في الاتصال بالسيرفر");
-    }
+    // تحديث القائمة
+    fetchTagsList();
+
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    alert("حدث خطأ في الاتصال بالسيرفر");
   }
+}
 
   return (
     <div className="min-h-screen pt-35 lg:pt-37.5 pb-10 px-4 sm:px-6">
@@ -130,12 +246,13 @@ function Add_tag() {
             />
           </div>
 
-          <button
-            className="bg-accent text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-accent-dark"
-            onClick={saveTag}
-          >
-            اضافة
-          </button>
+<button
+  type="button"
+  className="bg-accent text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-accent-dark"
+  onClick={saveTag}
+>
+  اضافة
+</button>
 
           <div className="mt-12.5">
             <h3 className="text-primary text-lg font-bold mb-5">الوسوم المضافة حالياً</h3>
@@ -161,12 +278,13 @@ function Add_tag() {
                         <td className="p-3 border-b border-gray-100">{tag.id}</td>
                         <td className="p-3 border-b border-gray-100">{tag.name}</td>
                         <td className="p-3 border-b border-gray-100 text-center">
-                          <button
-                            className="bg-accent text-white border-none py-1.5 px-3 rounded cursor-pointer transition-colors duration-300 hover:bg-accent-dark"
-                            onClick={() => deleteTag(tag.id)}
-                          >
-                            حذف
-                          </button>
+<button
+  type="button"
+  className="bg-accent text-white border-none py-1.5 px-3 rounded cursor-pointer transition-colors duration-300 hover:bg-accent-dark"
+  onClick={() => deleteTag(tag.id)}
+>
+  حذف
+</button>
                         </td>
                       </tr>
                     ))

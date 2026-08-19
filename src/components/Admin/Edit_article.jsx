@@ -1,12 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
+const API_URL = "";
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
 function Edit_article() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const articleId = searchParams.get("id");
+  const { id } = useParams();
+  const articleId = id ? id.split("-")[0] : null;
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -53,14 +63,19 @@ function Edit_article() {
       return;
     }
 
-    fetch("/api/check_user_auth.php")
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
       .then((r) => r.json())
       .then((data) => {
+        const user = data.user || data;
         if (
-          !data.authenticated ||
-          (data.user.role !== "admin" && data.user.can_add_article !== 1)
+          !user ||
+          (user.role !== "admin" && user.can_add_article != 1)
         )
-          window.location.href = "/";
+          navigate("/");
       });
 
     fetchTagsSuggestions();
@@ -69,12 +84,13 @@ function Edit_article() {
 
   async function fetchTagsSuggestions() {
     try {
-      const response = await fetch("/api/get_tags.php");
+      const response = await fetch(`${API_URL}/api/tags`);
       const data = await response.json();
-      if (data.success && Array.isArray(data.tags)) {
-        setTagSuggestions(data.tags.map((t) => t.name));
+      const tags = data.tags || data.data || (Array.isArray(data) ? data : []);
+      if (Array.isArray(tags)) {
+        setTagSuggestions(tags.map((t) => t.name));
         const map = {};
-        data.tags.forEach((t) => (map[t.name] = t.id));
+        tags.forEach((t) => (map[t.name] = t.id));
         setAllTagsMap(map);
       }
     } catch (err) {
@@ -84,21 +100,20 @@ function Edit_article() {
 
   async function loadArticleData() {
     try {
-      const response = await fetch(`/api/get_article.php?id=${articleId}`);
+      const response = await fetch(`${API_URL}/api/articles/${articleId}`);
       const data = await response.json();
 
-      if (data.success) {
-        setTitle(data.article.title);
-        setSlug(data.article.slug || "");
-        setType(String(data.article.type));
-        setContent(data.article.content || "");
+      const articleData = data.article || data;
 
-        // Load tags
-        const tagsRes = await fetch(`/api/get_article_tags.php?article_id=${articleId}`);
-        const tagsData = await tagsRes.json();
+      if (response.ok && articleData) {
+        setTitle(articleData.title);
+        setSlug(articleData.slug || "");
+        setType(String(articleData.type));
+        setContent(articleData.content || "");
 
-        if (tagsData.success && Array.isArray(tagsData.tags)) {
-          const tagNames = tagsData.tags.map((tag) =>
+        // Load tags from article
+        if (Array.isArray(articleData.tags)) {
+          const tagNames = articleData.tags.map((tag) =>
             typeof tag === "object" ? tag.name : tag
           );
           setTags(tagNames.filter(Boolean));
@@ -150,26 +165,52 @@ function Edit_article() {
       setTagInput("");
     }
 
-    const formData = new FormData();
-    formData.append("article_id", articleId);
-    formData.append("title", title);
-    formData.append("slug", slug);
-    formData.append("type", type);
-    formData.append("tags", JSON.stringify(getTagIds()));
-    formData.append("content", content);
-
-    if (coverImage) formData.append("cover_image", coverImage);
-    if (innerImage) formData.append("inner_image", innerImage);
-
     try {
-      const res = await fetch("/api/edit_article.php", {
+      // Get CSRF token
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      const formData = new FormData();
+      formData.append("_method", "PUT");
+      formData.append("title", title);
+      formData.append("slug", slug);
+      formData.append("type", type);
+
+      // Append tags
+      const tagIds = getTagIds();
+      tagIds.forEach((tagId) => {
+        formData.append("tags[]", tagId);
+      });
+
+      formData.append("content", content);
+
+      if (coverImage) formData.append("cover_image", coverImage);
+      if (innerImage) formData.append("inner_image", innerImage);
+
+      const res = await fetch(`${API_URL}/api/articles/${articleId}`, {
         method: "POST",
         body: formData,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       });
       const data = await res.json();
-      alert(data.message);
-      if (data.success) navigate("/blogs");
+
+      if (!res.ok) {
+        alert(data.message || "فشل تحديث المقال");
+        return;
+      }
+
+      alert("تم تحديث المقال بنجاح");
+      navigate("/blogs");
     } catch (err) {
+      console.error(err);
       alert("خطأ في الاتصال بالسيرفر");
     }
   }
@@ -338,6 +379,7 @@ function Edit_article() {
 
           <div className="flex flex-col sm:flex-row gap-3 items-center">
             <button
+              type="button"
               className="bg-primary text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-primary"
               onClick={updateArticle}
             >

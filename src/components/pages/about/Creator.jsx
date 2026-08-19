@@ -8,40 +8,24 @@ export default function Creator() {
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
 
-    // Modal functionality
-    const modal = document.getElementById("cvModal");
-    const modalBody = document.getElementById("modalBody");
-    const closeBtn = document.querySelector(".close-btn");
+    // عرض الـ CV في أسفل الصفحة عند الضغط على الزر
+    document.querySelectorAll(".cv-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const pdfUrl = this.getAttribute("data-pdf");
+        const personName = this.getAttribute("data-name");
+        const cvViewer = document.getElementById("cvViewer");
+        const cvFrame = document.getElementById("cvFrame");
+        const cvName = document.getElementById("cvName");
 
-    if (modal && modalBody && closeBtn) {
-      document.querySelectorAll(".cv-btn").forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          const pdfUrl = this.getAttribute("href");
-          const card = this.closest(".card");
-          const personName = card ? card.querySelector("h3").innerText : "";
-          modalBody.innerHTML = `
-            <h3 style="margin-bottom:15px; color:#007bff;">${personName}</h3>
-            <iframe src="${pdfUrl}" width="100%" height="600px" style="border:none; border-radius:10px;"></iframe>
-          `;
-          modal.style.display = "block";
-        });
+        if (cvViewer && cvFrame && cvName) {
+          cvFrame.src = pdfUrl;
+          cvName.textContent = personName;
+          cvViewer.style.display = "block";
+          // التمرير للأسفل بسلاسة
+          cvViewer.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       });
-
-      closeBtn.onclick = () => {
-        if (modal) {
-          modal.style.display = "none";
-        }
-        modalBody.innerHTML = "";
-      };
-
-      window.onclick = (event) => {
-        if (event.target == modal) {
-          modal.style.display = "none";
-          modalBody.innerHTML = "";
-        }
-      };
-    }
+    });
   }, []);
 
   return (
@@ -62,30 +46,31 @@ export default function Creator() {
         <div className="flex flex-col items-center gap-7.5 p-5">
           {/* القائد الرئيسي */}
           <div className="flex justify-center gap-20 w-full">
-            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:-translate-y-3.75 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-down">
+            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden  hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-down">
               <img
                 src="assets/creator/WhatsApp Image 2026-04-30 at 5.29.46 PM (2).jpeg"
                 alt="رئيس المعهد"
                 className="w-45 h-45 rounded-full object-cover mb-5 transition-transform duration-[0.4s] ease-in-out hover:scale-[1.05]"
               />
               <div className="">
-                <h3 className="my-3.75text-[1.4rem] font-bold text-[#333]">
+                <h3 className="my-3.75 text-[1.4rem] font-bold text-[#333]">
                   رئيس المعهد:<br />
                   د/ عمار مغربي
                 </h3>
-                <a
-                  href="assets/creator/Dr Ammar's CV _ -2022.pdf"
-                  className="cv-btn"
+                <button
+                  data-pdf="assets/creator/Dr Ammar's CV _ -2022.pdf"
+                  data-name="د/ عمار مغربي"
+                  className="cv-btn inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm no-underline transition-all duration-300 hover:bg-[#ce2634] hover:shadow-lg hover:shadow-[rgba(228,42,58,0.3)] hover:-translate-y-0.5 cursor-pointer border-none"
                 >
-                  +
-                </a>
+                  📄 عرض السيرة الذاتية
+                </button>
               </div>
             </div>
           </div>
 
           {/* الصف الثاني */}
           <div className="flex justify-center gap-20 w-full">
-            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:-translate-y-3.75 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-right" data-aos-delay="200">
+            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-right" data-aos-delay="200">
               <img
                 src="assets/creator/WhatsApp Image 2026-04-30 at 5.29.44 PM.jpeg"
                 alt="الرئيس التنفيذي"
@@ -96,18 +81,19 @@ export default function Creator() {
                   الرئيس التنفيذي:<br />
                   د/ محمد كمال
                 </h3>
-                <a
-                  href="assets/creator/M. Kamal CV 1-10-2014.pdf"
-                  className="cv-btn"
+                <button
+                  data-pdf="assets/creator/M. Kamal CV 1-10-2014.pdf"
+                  data-name="د/ محمد كمال"
+                  className="cv-btn inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm no-underline transition-all duration-300 hover:bg-[#ce2634] hover:shadow-lg hover:shadow-[rgba(228,42,58,0.3)] hover:-translate-y-0.5 cursor-pointer border-none"
                 >
-                  +
-                </a>
+                  📄 عرض السيرة الذاتية
+                </button>
               </div>
             </div>
 
-            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:-translate-y-3.75 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-left" data-aos-delay="400">
+            <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-left" data-aos-delay="400">
               <img
-                src="assets/creator/WhatsApp Image 2026-04-30 at 5.29.45 PM.jpeg"
+                src="src/assets/assets/creator/download (1).png"
                 alt="نائب الرئيس"
                 className="w-45 h-45 rounded-full object-cover mb-5 transition-transform duration-[0.4s] ease-in-out hover:scale-[1.05]"
               />
@@ -116,27 +102,46 @@ export default function Creator() {
                   نائب الرئيس:<br />
                   د/ مصطفى الخضري
                 </h3>
-                <a
-                  href="assets/creator/1-دبى مصطفى .pdf"
-                  className="cv-btn"
+                <button
+                  data-pdf="assets/creator/1-دبى مصطفى .pdf"
+                  data-name="د/ مصطفى الخضري"
+                  className="cv-btn inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm no-underline transition-all duration-300 hover:bg-[#ce2634] hover:shadow-lg hover:shadow-[rgba(228,42,58,0.3)] hover:-translate-y-0.5 cursor-pointer border-none"
                 >
-                  +
-                </a>
+                  📄 عرض السيرة الذاتية
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Modal for CV */}
-        <div id="cvModal" className="modal">
-          <div className="bg-white my-[10%] mx-auto p-7.5 rounded-[20px] w-1/2 max-w-175 relative shadow-[0_5px_30px_rgba(0,0,0,0.3)] animate-[slideUp_0.4s_ease]">
-            <span className="close-btn absolute top-6.25 left-6.25 right-auto text-[30px] font-bold cursor-pointer text-[#888] transition-[0.3s] leading-none z-1001 hover:text-[#ff0000] hover:scale-[1.1]">&times;</span>
-            <div id="cvDetails">
-              <h2 className="text-center mb-5">السيرة الذاتية</h2>
-              <hr className="mb-5" />
-              <div id="modalBody"></div>
-            </div>
+        {/* عرض الـ CV في أسفل الصفحة */}
+        <div
+          id="cvViewer"
+          className="hidden w-full max-w-200 mx-auto my-10 bg-white p-6 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
+        >
+          <div className="flex items-center justify-between mb-5 pb-4 border-b-2 border-[#f1f5f9]">
+            <h2 className="text-primary text-xl font-bold">
+              السيرة الذاتية: <span id="cvName" className="text-accent"></span>
+            </h2>
+            <button
+              onClick={() => {
+                document.getElementById("cvViewer").style.display = "none";
+                document.getElementById("cvFrame").src = "";
+              }}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#fee2e2] text-[#991b1b] text-lg font-bold border-none cursor-pointer transition-all duration-300 hover:bg-[#fecaca]"
+              title="إغلاق"
+            >
+              ✕
+            </button>
           </div>
+          <iframe
+            id="cvFrame"
+            src=""
+            width="100%"
+            height="700px"
+            style={{ border: "none", borderRadius: "10px" }}
+            title="CV Viewer"
+          ></iframe>
         </div>
       </main>
       <Footer />

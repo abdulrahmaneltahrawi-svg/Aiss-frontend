@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API_URL = "";
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
 function Add_book() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
@@ -9,36 +19,71 @@ function Add_book() {
   const [pdfFile, setPdfFile] = useState(null);
 
   useEffect(() => {
-    fetch("/api/check_user_auth.php", { cache: "no-store" })
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
       .then((r) => r.json())
       .then((data) => {
-        if (!data.authenticated || !data.user || data.user.can_add_article != 1) {
+        const user = data.user || data;
+        if (!data || !user || user.can_add_article != 1) {
           window.location.href = "/";
         }
+      })
+      .catch(() => {
+        window.location.href = "/";
       });
   }, []);
 
-  async function handleSave() {
+  async function handleSave(e) {
+  e.preventDefault();
     if (!title || !coverImage || !pdfFile) {
       alert("يرجى ملء جميع الحقول واختيار الملفات المطلوبة");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("slug", slug);
-    formData.append("cover_image", coverImage);
-    formData.append("file", pdfFile);
-
     try {
-      const res = await fetch("/api/add_booklet.php", {
+      // 1. CSRF Cookie
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      if (!xsrfToken) {
+        alert("لم يتم الحصول على CSRF Token");
+        return;
+      }
+
+      // 2. تجهيز FormData
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("slug", slug);
+      formData.append("cover_image", coverImage);
+      formData.append("file", pdfFile);
+
+      // 3. إرسال إلى Laravel
+      const res = await fetch(`${API_URL}/api/booklets`, {
         method: "POST",
         body: formData,
-        credentials: "same-origin",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       });
+
       const data = await res.json();
-      alert(data.message);
-      if (data.success) navigate("/admin");
+
+      if (!res.ok) {
+        alert(data.message || "فشل إضافة الكتيب");
+        return;
+      }
+
+      alert("تم إضافة الكتيب بنجاح");
+      navigate("/admin");
     } catch (err) {
       console.error(err);
       alert("حصل خطأ في الاتصال بالخادم");
@@ -70,7 +115,10 @@ function Add_book() {
           </ul>
         </aside>
 
-        <form className="flex-1 w-full bg-white p-6 sm:p-7.5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]">
+        <form
+  onSubmit={handleSave}
+  className="flex-1 w-full bg-white p-6 sm:p-7.5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]"
+>
           <h2 className="text-primary text-2xl font-bold mb-6.25">إضافة كتيب جديد</h2>
 
           <div className="mb-5">
@@ -115,9 +163,9 @@ function Add_book() {
 
           <div className="flex flex-col sm:flex-row gap-3 items-center">
             <button
-              className="bg-accent text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-accent-dark"
-              onClick={handleSave}
-            >
+  type="submit"
+  className="bg-accent text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-accent-dark"
+>
               حفظ ونشر الكتيب
             </button>
             <Link

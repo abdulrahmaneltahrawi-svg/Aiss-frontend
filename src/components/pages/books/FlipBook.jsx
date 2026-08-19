@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 
+const API_URL = "";
+
 export default function FlipBook() {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -50,12 +52,12 @@ export default function FlipBook() {
 
         // If only id is provided, fetch from API
         if (!finalPdfUrl && id) {
-          const endpoint = type === "booklet" ? "get_booklet.php" : "get_magazine.php";
-          const res = await fetch(`/api/${endpoint}?id=${id}`);
+          const apiPath = type === "booklet" ? "booklets" : "magazines";
+          const res = await fetch(`${API_URL}/api/${apiPath}/${id}`);
           const data = await res.json();
-          if (data.success) {
-            const item = data.magazine || data.booklet;
-            finalPdfUrl = item.file_path;
+          const item = data.booklet || data.magazine || data;
+          if (res.ok && item) {
+            finalPdfUrl = item.file || item.file_path || item.pdf;
             if (!finalPdfUrl) {
               setError("لا يوجد ملف PDF لهذا الإصدار");
               setLoading(false);
@@ -77,6 +79,8 @@ export default function FlipBook() {
         // Build the full PDF URL
         let resolvedUrl;
         if (finalPdfUrl.startsWith("http")) {
+          resolvedUrl = finalPdfUrl;
+        } else if (finalPdfUrl.startsWith("/Aiss")) {
           resolvedUrl = finalPdfUrl;
         } else if (finalPdfUrl.startsWith("/")) {
           resolvedUrl = finalPdfUrl;

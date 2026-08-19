@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+const API_URL = "http://127.0.0.1:8000";
+
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
@@ -54,10 +56,15 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
 
   // Check if user is admin
   useEffect(() => {
-    fetch("/api/check_user_auth.php", { cache: "no-store" })
+    fetch("/api/me", {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
       .then((r) => r.json())
       .then((data) => {
-        if (data.authenticated && data.user && (data.user.role === "admin" || data.user.can_add_article == 1)) {
+        const user = data.user || data;
+        if (user && (user.role === "admin" || user.can_add_article == 1)) {
           setIsAdmin(true);
         }
       })
@@ -69,17 +76,24 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
 
     async function loadMagazines() {
       try {
-        const response = await fetch("/api/get_magazines.php");
+        const response = await fetch("/api/magazines");
         const data = await response.json();
-        if (!cancelled && data.success && data.magazines) {
+        const items = data.magazines || data.data || (Array.isArray(data) ? data : []);
+
+        if (!cancelled && items.length > 0) {
           // Fix image path for magazines
-          const fixed = data.magazines.slice(0, 4).map((m) => {
-            let imgPath = m.cover_image || "";
-            if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-              imgPath = "/Aiss/backend/" + imgPath;
-            }
-            return { ...m, cover_image: imgPath };
-          });
+         const fixed = items.slice(0, 4).map((m) => {
+  let imgPath = m.cover_image || "";
+
+  if (imgPath && !imgPath.startsWith("http")) {
+    imgPath = `${API_URL}/storage/${imgPath}`;
+  }
+
+  return {
+    ...m,
+    cover_image: imgPath,
+  };
+});
           setMagazines(fixed);
           onAuthCheck?.();
         }
@@ -99,18 +113,18 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
 
     async function loadBlogs() {
       try {
-        const response = await fetch("/api/get_articles.php");
+        const response = await fetch("/api/articles");
         const data = await response.json();
-        const articlesFromDB = data.articles || data.data || [];
+        const articlesFromDB = data.articles || data.data || (Array.isArray(data) ? data : []);
 
         if (cancelled) return;
 
-        if (data.success && articlesFromDB.length > 0) {
+        if (articlesFromDB.length > 0) {
           // Fix image path - same as articles page
           const fixed = articlesFromDB.slice(0, 8).map((a) => {
             let imgPath = a.cover_image || a.image || "";
             if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-              imgPath = "/Aiss/backend/" + imgPath;
+              imgPath = "/" + imgPath;
             }
             return { ...a, cover_image: imgPath, img: imgPath };
           });
@@ -131,21 +145,42 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
     };
   }, [fallbackBlogs, onAuthCheck]);
 
+  function getXsrfToken() {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("XSRF-TOKEN="));
+
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+  }
+
   async function deleteMagazine(id) {
     if (!confirm("هل أنت متأكد من حذف هذه المجلة؟")) return;
     try {
-      const formData = new FormData();
-      formData.append("magazine_id", id);
-      const response = await fetch("/api/delete_magazine.php", {
-        method: "POST",
-        body: formData,
+      // Get CSRF token
+      await fetch("/sanctum/csrf-cookie", {
+        method: "GET",
+        credentials: "include",
       });
+
+      const xsrfToken = getXsrfToken();
+
+      const response = await fetch(
+        `/api/magazines/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "X-XSRF-TOKEN": xsrfToken,
+          },
+        }
+      );
       const data = await response.json();
-      if (data.success) {
+      if (response.ok) {
         alert("تم الحذف بنجاح");
         setMagazines((prev) => prev.filter((m) => m.id != id));
       } else {
-        alert("فشل الحذف: " + data.message);
+        alert("فشل الحذف: " + (data.message || "خطأ غير معروف"));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -156,18 +191,31 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
   async function deleteArticle(id) {
     if (!confirm("هل أنت متأكد من حذف هذا المقال؟")) return;
     try {
-      const formData = new FormData();
-      formData.append("article_id", id);
-      const response = await fetch("/api/delete_article.php", {
-        method: "POST",
-        body: formData,
+      // Get CSRF token
+      await fetch("/sanctum/csrf-cookie", {
+        method: "GET",
+        credentials: "include",
       });
+
+      const xsrfToken = getXsrfToken();
+
+      const response = await fetch(
+        `/api/articles/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "X-XSRF-TOKEN": xsrfToken,
+          },
+        }
+      );
       const data = await response.json();
-      if (data.success) {
+      if (response.ok) {
         alert("تم الحذف بنجاح");
         setBlogs((prev) => prev.filter((b) => b.id != id));
       } else {
-        alert("فشل الحذف: " + data.message);
+        alert("فشل الحذف: " + (data.message || "خطأ غير معروف"));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -186,7 +234,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
           fallbackImage={MAGAZINE_PLACEHOLDER}
           href={buildMagazineHref(item)}
           btnText="عرض المجلة"
-          editLink={isAdmin ? `/admin/edit-magazine?id=${item.id}` : null}
+          editLink={isAdmin ? `/admin/edit-magazine/${item.id}` : null}
           onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
         />
       )),
@@ -204,7 +252,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
           fallbackImage={BLOG_PLACEHOLDER}
           href={buildBlogHref(item)}
           btnText="عرض المدونة"
-          editLink={isAdmin ? `/admin/edit-article?id=${item.id}` : null}
+          editLink={isAdmin ? `/admin/edit-article/${item.id}` : null}
           onDelete={isAdmin ? () => deleteArticle(item.id) : null}
         />
       )),

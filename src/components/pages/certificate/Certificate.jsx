@@ -1,83 +1,260 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 
-export default function Certificate() {
-  useEffect(() => {
-    // Make verify function globally accessible
-    window.verify = async function () {
-      const code = document.getElementById("code")?.value?.trim();
-      const resultDiv = document.getElementById("result");
-      if (!resultDiv) return;
+const API_URL = "";
 
-      if (!code) {
-        resultDiv.style.display = "block";
-        resultDiv.innerHTML =
-          '<div class="card error-card"><h3>⚠️ يرجى إدخال كود الشهادة</h3></div>';
+export default function Certificate() {
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function handleVerify() {
+    const trimmedCode = code.trim();
+
+    if (!trimmedCode) {
+      setError("يرجى إدخال كود الشهادة");
+      setResult(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const res = await fetch(
+        `${API_URL}/api/certificates/verify/${encodeURIComponent(trimmedCode)}`,
+        { credentials: "include" }
+      );
+
+      // قراءة الرد بطريقة آمنة
+      const contentType = res.headers.get("content-type") || "";
+
+      let data;
+
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+
+        if (text) {
+          try {
+            data = JSON.parse(text);
+          } catch {
+            data = {};
+          }
+        } else {
+          data = {};
+        }
+      }
+
+      if (!res.ok) {
+        setError(data.message || "الشهادة غير موجودة");
+        setResult(null);
         return;
       }
 
-      resultDiv.style.display = "block";
-      resultDiv.innerHTML =
-        '<p style="text-align:center;color:#6b7280">جاري التحقق...</p>';
+      const cert = data.certificate || data;
 
-      try {
-        const base = window.location.pathname
-          .replace(/\/[^\/]*$/, "")
-          .replace(/\/api$/, "");
-        const res = await fetch(
-          base + `/api/verify.php?code=${encodeURIComponent(code)}`,
-          { credentials: "include" }
-        );
-        const data = await res.json();
-
-        if (!data.success) {
-          resultDiv.innerHTML = `<div class="card error-card"><h3>❌ ${data.message}</h3></div>`;
-          return;
-        }
-
-        const badgeClass =
-          data.status === "active"
-            ? "active"
-            : data.status === "expired"
-            ? "expired"
-            : "revoked";
-        const icon = data.valid ? "✅" : "❌";
-
-        resultDiv.innerHTML = `
-          <div class="card success-card">
-            <h3>${icon} ${data.valid ? "شهادة معتمدة" : "الشهادة غير سارية"}</h3>
-            <div class="row"><span class="label">نوع الشهادة</span><span class="value">${data.type}</span></div>
-            <div class="row"><span class="label">الاسم</span><span class="value">${data.holder_name}</span></div>
-            <div class="row"><span class="label">كود الشهادة</span><span class="value">${data.code}</span></div>
-            <div class="row"><span class="label">تاريخ الإصدار</span><span class="value">${data.issue_date}</span></div>
-            <div class="row"><span class="label">تاريخ الانتهاء</span><span class="value">${data.expiry_date ?? "غير محدد"}</span></div>
-            <div class="row"><span class="label">الحالة</span><span class="value"><span class="badge ${badgeClass}">${data.status_label}</span></span></div>
-            <a class="pdf-btn" href="${data.file_url}" target="_blank">📄 عرض الشهادة PDF</a>
-          </div>`;
-      } catch (err) {
-        resultDiv.innerHTML = `<div class="card error-card"><h3>خطأ: ${err.message}</h3></div>`;
+      if (!cert || !cert.code) {
+        setError("الشهادة غير موجودة");
+        setResult(null);
+        return;
       }
-    };
 
-    // Enter key support
-    document.getElementById("code")?.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") window.verify();
-    });
-  }, []);
+      setResult(cert);
+    } catch (err) {
+      setError("حدث خطأ أثناء التحقق: " + err.message);
+      setResult(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleVerify();
+    }
+  };
+
+  const statusInfo = {
+    active: {
+      label: "سارية",
+      badgeClass: "bg-[#d1fae5] text-[#065f46]",
+      icon: "✅",
+      title: "شهادة معتمدة",
+      cardClass: "border-[#34d399] bg-gradient-to-br from-[#f0fdf4] to-white",
+    },
+    expired: {
+      label: "منتهية الصلاحية",
+      badgeClass: "bg-[#fef3c7] text-[#92400e]",
+      icon: "⚠️",
+      title: "الشهادة منتهية الصلاحية",
+      cardClass: "border-[#f59e0b] bg-gradient-to-br from-[#fffbeb] to-white",
+    },
+    revoked: {
+      label: "ملغاة",
+      badgeClass: "bg-[#fee2e2] text-[#991b1b]",
+      icon: "❌",
+      title: "الشهادة ملغاة",
+      cardClass: "border-[#f87171] bg-gradient-to-br from-[#fef2f2] to-white",
+    },
+  };
+
+  const status = result ? statusInfo[result.status] || statusInfo.revoked : null;
 
   return (
     <>
       <Header />
       <main className="page-content">
-        <div className="bg-white p-[100px_20px] rounded-[30px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] w-full max-w-125 my-37.5 mx-auto block">
-          <h2 className="text-primary text-center mb-7.5 font-extrabold">التحقق من شهادة</h2>
-          <label htmlFor="code" className="font-bold text-[14px] text-[#555] block mb-2.5">كود الشهادة</label>
-          <input type="text" id="code" placeholder="AISSFC25070050" className="w-full p-[12px_15px] my-[8px_0_16px] box-border border border-[#ddd] rounded-md text-[15px] outline-none transition-[border-color_0.3s] focus:border-primary" />
-          <button className="bg-accent text-white p-1.5 border-none rounded-md cursor-pointer w-full text-[16px] font-bold transition-[background_0.3s] hover:bg-[#ce2634]" onClick={() => window.verify()}>
-            تحقق
-          </button>
-          <div id="result" className="mt-6 hidden"></div>
+        <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
+          <div className="w-full max-w-150">
+            {/* الترويسة */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#eef2ff] mb-4">
+                <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-extrabold text-primary mb-2">
+                التحقق من شهادة
+              </h1>
+              <p className="text-[#94a3b8] text-sm">
+                أدخل كود الشهادة للتحقق من صحتها وصلاحيتها
+              </p>
+            </div>
+
+            {/* فورم البحث */}
+            <div className="bg-white rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-8 border border-[#f1f5f9]">
+              <label
+                htmlFor="code"
+                className="block text-[14px] font-bold text-[#334155] mb-2"
+              >
+                كود الشهادة
+              </label>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  id="code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="AISSFC25070050"
+                  className="flex-1 px-4 py-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-[15px] text-[#334155] placeholder-[#94a3b8] outline-none transition-all duration-300 focus:border-primary focus:bg-white focus:ring-4 focus:ring-[rgba(35,82,135,0.08)]"
+                  dir="ltr"
+                />
+
+                <button
+                  onClick={handleVerify}
+                  disabled={loading}
+                  className="bg-accent text-white px-8 py-3 rounded-xl font-bold text-base transition-all duration-300 hover:bg-[#ce2634] hover:shadow-lg hover:shadow-[rgba(228,42,58,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      جاري التحقق...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      تحقق
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* رسالة الخطأ */}
+              {error && (
+                <div className="mt-6 p-5 rounded-xl text-sm font-medium leading-relaxed border bg-[#fee2e2] border-[#f87171] text-[#991b1b] flex items-center gap-3">
+                  <span className="text-xl">❌</span>
+                  {error}
+                </div>
+              )}
+
+              {/* نتيجة التحقق */}
+              {result && status && (
+                <div className={`mt-6 rounded-[20px] border-2 p-8 ${status.cardClass}`}>
+                  {/* حالة الشهادة */}
+                  <div className="text-center mb-6">
+                    <div className="text-5xl mb-3">{status.icon}</div>
+                    <h3 className="text-2xl font-extrabold text-[#1e293b] mb-2">
+                      {status.title}
+                    </h3>
+                    <span className={`inline-block px-4 py-1.5 rounded-full text-[13px] font-bold ${status.badgeClass}`}>
+                      {status.label}
+                    </span>
+                  </div>
+
+                  {/* بيانات الشهادة */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">نوع الشهادة</p>
+                      <p className="text-[15px] font-bold text-[#334155]">
+                        {result.certificate_name || "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">اسم الحاصل</p>
+                      <p className="text-[15px] font-bold text-[#334155]">
+                        {result.holder_name || "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">كود الشهادة</p>
+                      <p className="text-[15px] font-bold text-[#334155]">
+                        {result.code || "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">تاريخ الإصدار</p>
+                      <p className="text-[15px] font-bold text-[#334155]">
+                        {result.issue_date ? result.issue_date.slice(0, 10) : "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">تاريخ الانتهاء</p>
+                      <p className="text-[15px] font-bold text-[#334155]">
+                        {result.expiry_date ? result.expiry_date.slice(0, 10) : "غير محدد"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 rounded-xl p-4 border border-[#f1f5f9]">
+                      <p className="text-[12px] font-bold text-[#94a3b8] mb-1">الحالة</p>
+                      <span className={`inline-block px-3 py-1 rounded-full text-[12px] font-bold ${status.badgeClass}`}>
+                        {status.label}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* زر عرض PDF */}
+                  {result.file_url && (
+                    <div className="text-center mt-6">
+                      <a
+                        href={result.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-xl font-bold text-sm no-underline transition-all duration-300 hover:bg-primary-dark hover:shadow-lg hover:shadow-[rgba(35,82,135,0.3)]"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        عرض الشهادة PDF
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
       <Footer />

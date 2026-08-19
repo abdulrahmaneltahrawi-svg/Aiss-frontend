@@ -72,7 +72,7 @@
 
   /* بانر الهيدر في جميع الصفحات */
   .page-hero {
-    @apply relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25;
+    @apply relative w-full h-125 flex justify-center items-center overflow-hidden mt-21.25;
   }
 
   /* صورة خلفية البانر */
@@ -82,7 +82,7 @@
 
   /* عنوان البانر الرئيسي */
   .page-hero-title {
-    @apply text-accent text-[5rem] [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)];
+    @apply text-accent text-[5rem] font-bold [text-shadow:2px_3px_9px_rgba(0,0,0,0.6)];
   }
 
   /* شريط عنوان القسم */
@@ -98,5 +98,10 @@
   /* شريط الفلترة / الترتيب */
   .filter-bar {
     @apply max-w-fit mx-auto my-[30px_auto_20px] flex justify-center items-center gap-2.5 bg-white px-5 py-2.5 rounded-[50px] shadow-[0_8px_25px_rgba(0,0,0,0.06)] border border-[#eee];
+  }
+
+  /* زر عرض المزيد - تنسيق موحد */
+  .btn1 {
+    @apply inline-block p-[15px_20px] bg-[whitesmoke] no-underline my-[30px_auto] text-black text-[16px] font-bold rounded-[25px] border border-black cursor-pointer transition-all duration-300 ease-in-out hover:text-gray-500 hover:bg-[#f5f5f5] hover:scale-[1.05];
   }
 }

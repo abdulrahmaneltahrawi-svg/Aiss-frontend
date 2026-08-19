@@ -9,6 +9,17 @@ function Header() {
   const headerRef = useRef(null);
   const searchRef = useRef(null);
 
+  // Close menu on desktop < 1024px
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Close menu when clicking outside
   useEffect(() => {
     const closeOutside = (e) => {

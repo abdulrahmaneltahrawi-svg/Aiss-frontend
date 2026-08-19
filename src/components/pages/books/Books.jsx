@@ -7,12 +7,27 @@ import Footer from "../../common/Footer.jsx";
 import Card from "../../common/Card.jsx";
 
 const ITEMS_PER_PAGE = 8;
+const API_URL = "";
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
 
 function fixImagePath(imgPath) {
-  if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-    return "/Aiss/backend/" + imgPath;
+  if (!imgPath) return "assets/imge/0006.jpg";
+  if (imgPath.startsWith("http")) return imgPath;
+  if (imgPath.startsWith("/Aiss")) return imgPath;
+  if (imgPath.startsWith("/")) return imgPath;
+  // Laravel storage paths (booklets/images/..., booklets/files/...)
+  if (imgPath.startsWith("booklets/") || imgPath.startsWith("magazines/")) {
+    return "http://localhost/aissco-backend-dev/public/storage/" + imgPath;
   }
-  return imgPath || "assets/imge/0006.jpg";
+  // Legacy PHP uploads (assets/uploads/...)
+  return "/Aiss/backend/" + imgPath;
 }
 
 export default function Books() {
@@ -26,10 +41,15 @@ export default function Books() {
 
   // Check if user is admin
   useEffect(() => {
-    fetch("/api/check_user_auth.php", { cache: "no-store" })
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
       .then((r) => r.json())
       .then((data) => {
-        if (data.authenticated && data.user && (data.user.role === "admin" || data.user.can_add_article == 1)) {
+        const user = data.user || data;
+        if (user && (user.role === "admin" || user.can_add_article == 1)) {
           setIsAdmin(true);
         }
       })
@@ -39,7 +59,7 @@ export default function Books() {
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await fetch("/api/get_booklets.php");
+        const response = await fetch(`${API_URL}/api/booklets`);
         const data = await response.json();
         const items = data.booklets || data.data || (Array.isArray(data) ? data : []);
         setAllItems(items);
@@ -60,19 +80,29 @@ export default function Books() {
   async function deleteBooklet(id) {
     if (!confirm("هل أنت متأكد من حذف هذا الكتيب؟")) return;
     try {
-      const formData = new FormData();
-      formData.append("booklet_id", id);
-      const response = await fetch("/api/delete_booklet.php", {
-        method: "POST",
-        body: formData,
+      // Get CSRF token
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      const response = await fetch(`${API_URL}/api/booklets/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       });
       const data = await response.json();
-      if (data.success) {
+      if (response.ok) {
         alert("تم الحذف بنجاح");
         setAllItems((prev) => prev.filter((item) => item.id != id));
         setDisplayedCount((prev) => Math.min(prev, allItems.length - 1));
       } else {
-        alert("فشل الحذف: " + data.message);
+        alert("فشل الحذف: " + (data.message || "خطأ غير معروف"));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -114,7 +144,7 @@ export default function Books() {
                   fallbackImage="assets/imge/0006.jpg"
                   href={`/flipbook?id=${item.id}&type=booklet&title=${encodeURIComponent(title)}`}
                   btnText="عرض الكتيب"
-                  editLink={isAdmin ? `/admin/edit-book?id=${item.id}` : null}
+                  editLink={isAdmin ? `/admin/edit-book/${item.id}` : null}
                   onDelete={isAdmin ? () => deleteBooklet(item.id) : null}
                 />
               );

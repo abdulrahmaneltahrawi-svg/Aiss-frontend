@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * مكون كرت موحد للمشروع بأكمله
@@ -18,6 +19,7 @@ export default function Card({
   aosDelay = "100",
   price,
   onButtonClick,
+  onCardClick,
 }) {
   const [src, setSrc] = useState(image || fallbackImage);
 
@@ -27,13 +29,14 @@ export default function Card({
   return (
     <div
       id={`card-${id}`}
-      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 ${className}`}
+      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
       data-aos="fade-up"
       data-aos-delay={aosDelay}
+      onClick={onCardClick}
       style={{ minHeight: "380px", maxHeight: "380px" }}
     >
       {href ? (
-        <a href={href} className="block">
+        <Link to={href} className="block">
           <img
             src={src}
             alt={title || "صورة"}
@@ -44,7 +47,7 @@ export default function Card({
             }}
             className="w-full h-67.5 object-cover rounded-t-lg"
           />
-        </a>
+        </Link>
       ) : (
         <div className="block">
           <img
@@ -79,15 +82,18 @@ export default function Card({
           {onButtonClick ? (
             <button
               type="button"
-              onClick={onButtonClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onButtonClick();
+              }}
               className={`${buttonClass} cursor-pointer`}
             >
               {btnText}
             </button>
           ) : href ? (
-            <a href={href} className={buttonClass}>
+            <Link to={href} className={buttonClass}>
               {btnText}
-            </a>
+            </Link>
           ) : null}
           {(onDelete || onEdit || editLink) && (
             <div
@@ -97,12 +103,12 @@ export default function Card({
               }}
             >
               {editLink && (
-                <a
-                  href={editLink}
+                <Link
+                  to={editLink}
                   className="block w-full p-[8px_5px] bg-primary text-white text-[12px] font-bold text-center rounded-[10px] m-0"
                 >
                   تعديل
-                </a>
+                </Link>
               )}
               {onEdit && (
                 <button

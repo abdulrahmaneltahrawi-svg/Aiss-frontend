@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
+const API_URL = "";
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
 
 function Edit_magazine() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const rawId = searchParams.get("id");
-  const magazineId = rawId ? rawId.split("-")[0] : null;
+  const { id } = useParams();
+  const magazineId = id ? id.split("-")[0] : null;
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -14,35 +23,42 @@ function Edit_magazine() {
 
   useEffect(() => {
     if (!magazineId) {
-      alert("معرف المجلة غير موجود");
-      navigate("/admin");
+      alert("معرف المجلة غير موجود. الرجاء اختيار مجلة من صفحة المجلات");
+      navigate("/magazine");
       return;
     }
 
     loadMagazineData();
 
-    fetch("/api/check_user_auth.php")
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
       .then((r) => r.json())
       .then((data) => {
+        const user = data.user || data;
         if (
-          !data.authenticated ||
-          (data.user.role !== "admin" && data.user.can_add_article !== 1)
+          !user ||
+          (user.role !== "admin" && user.can_add_article != 1)
         ) {
-          window.location.href = "/";
+          navigate("/");
         }
       });
   }, []);
 
   async function loadMagazineData() {
     try {
-      const response = await fetch(`/api/get_magazine.php?id=${magazineId}`);
+      const response = await fetch(`${API_URL}/api/magazines/${magazineId}`);
       const data = await response.json();
 
-      if (data.success) {
-        setTitle(data.magazine.title);
-        setSlug(data.magazine.slug || "");
+      const magazineData = data.magazine || data;
+
+      if (response.ok && magazineData) {
+        setTitle(magazineData.title);
+        setSlug(magazineData.slug || "");
       } else {
-        alert("فشل في جلب بيانات المجلة: " + data.message);
+        alert("فشل في جلب بيانات المجلة");
       }
     } catch (err) {
       console.error("Error loading data:", err);
@@ -50,26 +66,40 @@ function Edit_magazine() {
   }
 
   async function saveMagazineChanges() {
-    const formData = new FormData();
-    formData.append("magazine_id", magazineId);
-    formData.append("title", title);
-    formData.append("slug", slug);
-
-    if (coverImage) formData.append("cover_image", coverImage);
-    if (pdfFile) formData.append("file", pdfFile);
-
     try {
-      const response = await fetch("/api/update_magazine.php", {
+      // Get CSRF token
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      const formData = new FormData();
+      formData.append("_method", "PUT");
+      formData.append("magazine_id", magazineId);
+      formData.append("title", title);
+      formData.append("slug", slug);
+
+      if (coverImage) formData.append("cover_image", coverImage);
+      if (pdfFile) formData.append("file", pdfFile);
+
+      const response = await fetch(`${API_URL}/api/magazines/${magazineId}`, {
         method: "POST",
         body: formData,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
       });
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok) {
         alert("تم تحديث المجلة بنجاح!");
         navigate("/magazine");
       } else {
-        alert("خطأ: " + data.message);
+        alert("خطأ: " + (data.message || "فشل التحديث"));
       }
     } catch (err) {
       console.error("Error updating:", err);
@@ -93,10 +123,10 @@ function Edit_magazine() {
             </li>
             <li>
               <Link
-                to="/admin/edit-magazine"
+                to="/magazine"
                 className="block px-4 py-3 rounded-[10px] font-bold no-underline transition-colors duration-300 bg-sidebar-bg text-accent"
               >
-                تعديل المجلة
+                اختيار مجلة للتعديل
               </Link>
             </li>
           </ul>
@@ -147,6 +177,7 @@ function Edit_magazine() {
 
           <div className="flex flex-col sm:flex-row gap-3 items-center">
             <button
+              type="button"
               className="bg-primary text-white border-none py-3 px-7.5 rounded-lg font-bold cursor-pointer text-base transition-colors duration-300 hover:bg-primary-dark"
               onClick={saveMagazineChanges}
             >

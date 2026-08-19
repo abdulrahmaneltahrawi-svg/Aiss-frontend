@@ -540,7 +540,6 @@ function AddAccred() {
       setPdfFile(null);
 
       // تحديث قائمة الطلبات
-      fetchOrders();
     } catch (error) {
       console.error("خطأ في إصدار الشهادة:", error);
       setResult({

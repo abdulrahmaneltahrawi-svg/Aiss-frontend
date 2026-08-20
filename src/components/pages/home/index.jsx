@@ -37,6 +37,21 @@ function buildBlogHref(item) {
   return `/views?id=${item.id}&source=article`;
 }
 
+function fixArticleImage(imgPath) {
+  if (!imgPath) return "assets/magazine/placeholder.webp";
+
+  if (imgPath.startsWith("http")) return imgPath;
+
+  if (imgPath.startsWith("/")) return imgPath;
+
+  // Access images directly through Apache / XAMPP htdocs
+  if (imgPath.startsWith("magazines/") || imgPath.startsWith("articles/") || imgPath.startsWith("booklets/")) {
+    return `http://localhost/aiss-backend/public/storage/${imgPath}`;
+  }
+
+  return `http://127.0.0.1:8000/storage/${imgPath}`;
+}
+
 export default function Home({ fallbackBlogs = [], onAuthCheck }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [magazines, setMagazines] = useState([]);
@@ -122,10 +137,7 @@ export default function Home({ fallbackBlogs = [], onAuthCheck }) {
         if (articlesFromDB.length > 0) {
           // Fix image path - same as articles page
           const fixed = articlesFromDB.slice(0, 8).map((a) => {
-            let imgPath = a.cover_image || a.image || "";
-            if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-              imgPath = "/" + imgPath;
-            }
+            const imgPath = fixArticleImage(a.cover_image || a.image || "");
             return { ...a, cover_image: imgPath, img: imgPath };
           });
           setBlogs(fixed);

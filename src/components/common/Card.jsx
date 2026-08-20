@@ -20,8 +20,50 @@ export default function Card({
   price,
   onButtonClick,
   onCardClick,
+  imageOnly = false,
 }) {
   const [src, setSrc] = useState(image || fallbackImage);
+
+  if (imageOnly) {
+    return (
+      <div
+        id={`card-${id}`}
+        className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
+        data-aos="fade-up"
+        data-aos-delay={aosDelay}
+        onClick={onCardClick}
+        style={{ minHeight: "380px", maxHeight: "380px" }}
+      >
+        {href ? (
+          <Link to={href} className="block w-full h-full">
+            <img
+              src={src}
+              alt={title || "صورة"}
+              loading="lazy"
+              decoding="async"
+              onError={() => {
+                if (src !== fallbackImage) setSrc(fallbackImage);
+              }}
+              className="w-full h-full object-cover"
+            />
+          </Link>
+        ) : (
+          <div className="block w-full h-full">
+            <img
+              src={src}
+              alt={title || "صورة"}
+              loading="lazy"
+              decoding="async"
+              onError={() => {
+                if (src !== fallbackImage) setSrc(fallbackImage);
+              }}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const buttonClass =
     "block w-full p-[8px_15px] bg-linear-to-b from-[#f56874] to-[#e429397e] text-black text-[13px] font-bold text-center rounded-[10px] border border-black transition-all duration-300 ease-in-out mt-1.25 hover:text-[#f7f5f5] m-0";

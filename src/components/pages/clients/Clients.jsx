@@ -83,8 +83,8 @@ export default function Clients() {
                       />
                     </div>
                     <div className="p-3.75 grow">
-                      <span className="bg-[#e1f5fe] text-[#0288d1] px-2 py-3 rounded-[10px] text-[11px] font-bold">{p.countryAr}</span>
-                      <h3 className="text-[16px] my-[10px_0_5px] text-[#2c3e50]">{p.name}</h3>
+                      <span className="bg-[#e1f5fe] text-[#0288d1] px-2 py-3  rounded-[10px] text-[11px] font-bold">{p.countryAr}</span>
+                      <h3 className="text-[16px] my-[10px_0_5px] text-[#2c3e50] mt-3">{p.name}</h3>
                       <p className="text-[13px] text-[#666] m-0 leading-[1.4]">{p.desc}</p>
                     </div>
                   </div>

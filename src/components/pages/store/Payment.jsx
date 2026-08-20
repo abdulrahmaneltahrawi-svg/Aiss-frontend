@@ -208,14 +208,13 @@ export default function Payment() {
 
       const fd = new FormData();
 
+      fd.append("certificate_type_id", certificateType);
       fd.append("first_name", firstName);
       fd.append("last_name", lastName);
       fd.append("company_name", companyName || "");
+      fd.append("country", country);
       fd.append("phone", phone);
       fd.append("email", email);
-      fd.append("certificate_type_id", certificateType);
-      fd.append("amount", total);
-      fd.append("country", country);
       fd.append("notes", notes || "");
 
       const headers = {
@@ -285,103 +284,39 @@ export default function Payment() {
       |--------------------------------------------------------------------------
       */
 
-      if (!res1.ok || !data1.success) {
-        alert(
+      if (!res1.ok) {
+        const errorMessage =
           data1.message ||
-            "فشل إنشاء الطلب"
-        );
+          (data1.errors
+            ? Object.values(data1.errors).flat().join("، ")
+            : "فشل إنشاء الطلب");
+
+        alert(errorMessage);
 
         setLoading(false);
         return;
       }
 
-      const orderId = data1.order_id;
+      const certificateRequest =
+        data1.certificate_request || data1;
 
       console.log(
-        "تم إنشاء الطلب:",
-        orderId
+        "تم إنشاء طلب الشهادة:",
+        certificateRequest.id
       );
 
-      /*
-      |--------------------------------------------------------------------------
-      | إنشاء Stripe Checkout
-      |--------------------------------------------------------------------------
-      */
+      // مسح جميع البيانات بعد نجاح الطلب
+      resetOrderData();
 
-      const fd2 = new FormData();
-
-      fd2.append(
-        "order_id",
-        orderId
+      // إظهار رسالة نجاح
+      alert(
+        "تم استلام طلبك بنجاح! سيتم التواصل معك قريباً."
       );
 
-      const res2 = await fetch(
-        `${API_URL}/api/create-stripe-checkout`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            ...(csrfToken
-              ? {
-                  "X-XSRF-TOKEN":
-                    csrfToken,
-                }
-              : {}),
-          },
-          body: fd2,
-          credentials: "include",
-        }
-      );
-
-      const contentType2 =
-        res2.headers.get("content-type") || "";
-
-      let data2;
-
-      if (contentType2.includes("application/json")) {
-        data2 = await res2.json();
-      } else {
-        const text2 = await res2.text();
-
-        console.error(
-          "Stripe endpoint returned non-JSON:",
-          text2
-        );
-
-        throw new Error(
-          `خطأ في API الدفع: ${res2.status}`
-        );
-      }
-
-      /*
-      |--------------------------------------------------------------------------
-      | تحويل المستخدم إلى Stripe
-      |--------------------------------------------------------------------------
-      */
-
-      if (
-        data2.success &&
-        data2.checkout_url
-      ) {
-
-        // مسح جميع البيانات فوراً قبل الانتقال إلى Stripe
-        // لأن البيانات محفوظة في Laravel بالفعل
-        resetOrderData();
-
-        // تأخير صغير لضمان اكتمال مسح React state و DOM
-        // قبل الانتقال إلى Stripe
-        setTimeout(() => {
-          window.location.href =
-            data2.checkout_url;
-        }, 50);
-      } else {
-        alert(
-          data2.message ||
-            "فشل في إنشاء صفحة الدفع"
-        );
-
-        setLoading(false);
-      }
+      // توجيه المستخدم للرئيسية
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
     } catch (error) {
       console.error(
         "خطأ:",

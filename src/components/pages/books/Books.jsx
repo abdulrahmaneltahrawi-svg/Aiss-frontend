@@ -23,8 +23,8 @@ function fixImagePath(imgPath) {
   if (imgPath.startsWith("/Aiss")) return imgPath;
   if (imgPath.startsWith("/")) return imgPath;
   // Laravel storage paths (booklets/images/..., booklets/files/...)
-  if (imgPath.startsWith("booklets/") || imgPath.startsWith("magazines/")) {
-    return "http://localhost/aissco-backend-dev/public/storage/" + imgPath;
+  if (imgPath.startsWith("booklets/") || imgPath.startsWith("magazines/") || imgPath.startsWith("articles/")) {
+    return "http://localhost/aiss-backend/public/storage/" + imgPath;
   }
   // Legacy PHP uploads (assets/uploads/...)
   return "/Aiss/backend/" + imgPath;

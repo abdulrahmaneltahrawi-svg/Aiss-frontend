@@ -7,7 +7,7 @@ import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 import Card from "../../common/Card.jsx";
 
-const API_URL = "";
+const API_URL = "http://127.0.0.1:8000";
 
 function getXsrfToken() {
   const cookie = document.cookie
@@ -23,15 +23,23 @@ export default function Magazines() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Fix image path for magazines (same as articles)
-  function fixMagazineImage(imgPath) {
-    if (!imgPath) return "assets/magazine/placeholder.webp";
-    if (imgPath.startsWith("http")) return imgPath;
-    if (imgPath.startsWith("/Aiss")) return imgPath;
-    if (imgPath.startsWith("/")) return imgPath;
-    // Images stored in backend/assets/uploads/
-    return "/Aiss/backend/" + imgPath;
+  // Fix image path for magazines - images are served from XAMPP htdocs
+  // via the Laravel storage/app/public directory
+function fixMagazineImage(imgPath) {
+  if (!imgPath) return "assets/magazine/placeholder.webp";
+
+  if (imgPath.startsWith("http")) return imgPath;
+
+  if (imgPath.startsWith("/")) return imgPath;
+
+  // Access images directly through Apache / XAMPP htdocs
+  // DB stores paths like: magazines/images/xxx.png
+  if (imgPath.startsWith("magazines/") || imgPath.startsWith("articles/") || imgPath.startsWith("booklets/")) {
+    return `http://localhost/aiss-backend/public/storage/${imgPath}`;
   }
+
+  return `${API_URL}/storage/${imgPath}`;
+}
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
@@ -174,20 +182,24 @@ export default function Magazines() {
         </div>
 
         <div className="cards-grid">
-          {sortedMagazines.map((item, idx) => (
-            <Card
-              key={item.id ?? idx}
-              id={item.id ?? idx}
-              title={item.title}
-              image={fixMagazineImage(item.cover_image)}
-              fallbackImage="assets/magazine/placeholder.webp"
-              href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
-              btnText="عرض المجلة"
-              editLink={isAdmin ? `/admin/edit-magazine/${item.id}` : null}
-              onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
-            />
-          ))}
-        </div>
+  {sortedMagazines.map((item, idx) => {
+    console.log("IMAGE:", item.cover_image);
+
+    return (
+      <Card
+        key={item.id ?? idx}
+        id={item.id ?? idx}
+        title={item.title}
+        image={fixMagazineImage(item.cover_image)}
+        fallbackImage="assets/magazine/placeholder.webp"
+        href={`/flipbook?id=${item.id}&type=magazine&title=${encodeURIComponent(item.title)}`}
+        btnText="عرض المجلة"
+        editLink={isAdmin ? `/admin/edit-magazine/${item.id}` : null}
+        onDelete={isAdmin ? () => deleteMagazine(item.id) : null}
+      />
+    );
+  })}
+</div>
       </main>
       <Scroll />
       <Footer />

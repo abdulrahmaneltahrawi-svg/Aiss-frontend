@@ -22,6 +22,21 @@ function getCategory(item) {
   return item.category || "مقالات تجربه";
 }
 
+function fixArticleImage(imgPath) {
+  if (!imgPath) return "assets/magazine/placeholder.webp";
+
+  if (imgPath.startsWith("http")) return imgPath;
+
+  if (imgPath.startsWith("/")) return imgPath;
+
+  // Access images directly through Apache / XAMPP htdocs
+  if (imgPath.startsWith("magazines/") || imgPath.startsWith("articles/") || imgPath.startsWith("booklets/")) {
+    return `http://localhost/aiss-backend/public/storage/${imgPath}`;
+  }
+
+  return `http://127.0.0.1:8000/storage/${imgPath}`;
+}
+
 const CATEGORIES = ["محتويات علمية", "مقالات الخبراء", "مقالات المجلة"];
 const BLOGS_PER_PAGE = 8;
 
@@ -53,11 +68,7 @@ export default function Articles() {
         const data = await response.json();
         const articlesArray = data.articles || data.data || (Array.isArray(data) ? data : []);
         const mapped = (articlesArray || []).map((a) => {
-          // Fix image path - Laravel storage
-          let imgPath = a.cover_image || a.image || "";
-          if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("/")) {
-            imgPath = "/" + imgPath;
-          }
+          const imgPath = fixArticleImage(a.cover_image || a.image || "");
           return {
             ...a,
             source: "db",

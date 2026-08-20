@@ -4,6 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
+import Comment from "../../common/Comment.jsx";
 
 // أكواد ثابتة
 import { codesData } from "./Code.jsx";
@@ -67,9 +68,6 @@ export default function ViewArticle() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [comments, setComments] = useState([]);
-  const [commentName, setCommentName] = useState("");
-  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     AOS.init({
@@ -283,72 +281,7 @@ export default function ViewArticle() {
     }
 
     loadArticle();
-
-    // ==========================================
-    // تحميل التعليقات من localStorage
-    // ==========================================
-
-    const savedComments = localStorage.getItem(
-      `comments-${source}-${id}`
-    );
-
-    if (savedComments) {
-      try {
-        setComments(JSON.parse(savedComments));
-      } catch (e) {
-        console.error("Error loading comments:", e);
-      }
-    } else {
-      setComments([]);
-    }
   }, [id, source]);
-
-  // ==========================================
-  // حفظ التعليقات
-  // ==========================================
-
-  function saveComments(newComments) {
-    setComments(newComments);
-
-    localStorage.setItem(
-      `comments-${source}-${id}`,
-      JSON.stringify(newComments)
-    );
-  }
-
-  // ==========================================
-  // إضافة تعليق
-  // ==========================================
-
-  function handleAddComment(e) {
-    e.preventDefault();
-
-    if (!commentName.trim() || !commentText.trim()) {
-      return;
-    }
-
-    const newComment = {
-      id: Date.now(),
-      name: commentName.trim(),
-      text: commentText.trim(),
-      date: new Date().toLocaleDateString("ar-SA"),
-    };
-
-    saveComments([...comments, newComment]);
-
-    setCommentName("");
-    setCommentText("");
-  }
-
-  // ==========================================
-  // حذف تعليق
-  // ==========================================
-
-  function handleDeleteComment(commentId) {
-    saveComments(
-      comments.filter((c) => c.id !== commentId)
-    );
-  }
 
   // ==========================================
   // Loading
@@ -521,89 +454,7 @@ export default function ViewArticle() {
         </div>
 
         {/* التعليقات */}
-        <div
-          className="max-w-200 mx-auto my-10 p-5 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.06)] text-right"
-          data-aos="fade-up"
-        >
-          <h3 className="text-primary mb-5 text-[20px]">
-            💬 التعليقات ({comments.length})
-          </h3>
-
-          {/* نموذج التعليق */}
-          <form
-            onSubmit={handleAddComment}
-            className="mb-6.25 bg-[#f9f9f9] p-3.75 rounded-lg"
-          >
-            <input
-              type="text"
-              placeholder="اسمك"
-              value={commentName}
-              onChange={(e) =>
-                setCommentName(e.target.value)
-              }
-              required
-              className="w-full p-2.5 border border-[#ddd] rounded-lg mb-2.5 text-[14px]"
-            />
-
-            <textarea
-              placeholder="اكتب تعليقك..."
-              value={commentText}
-              onChange={(e) =>
-                setCommentText(e.target.value)
-              }
-              required
-              rows={3}
-              className="w-full p-2.5 border border-[#ddd] rounded-lg mb-2.5 text-[14px] resize-y"
-            />
-
-            <button
-              type="submit"
-              className="btn1 bg-primary text-white border-none px-7.5 py-3 cursor-pointer text-[14px] rounded-lg"
-            >
-              إرسال التعليق
-            </button>
-          </form>
-
-          {/* قائمة التعليقات */}
-          {comments.length === 0 ? (
-            <p className="text-[#999] text-center p-5">
-              لا توجد تعليقات بعد. كن أول من يعلق!
-            </p>
-          ) : (
-            comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="bg-[#f9f9f9] p-2.75 rounded-lg border-r-[3px] border-accent"
-              >
-                <div className="flex justify-between items-center mb-2.5">
-                  <strong className="text-primary text-[14px]">
-                    {comment.name}
-                  </strong>
-
-                  <div className="flex gap-2 items-center">
-                    <span className="text-[#999] text-[11px]">
-                      {comment.date}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDeleteComment(comment.id)
-                      }
-                      className="bg-transparent border-none text-accent cursor-pointer text-[12px]"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-
-                <p className="text-[14px] text-[#444] m-0">
-                  {comment.text}
-                </p>
-              </div>
-            ))
-          )}
-        </div>
+        <Comment source={source} id={id ? id.split("-")[0] : ""} />
       </main>
 
       <Footer />

@@ -41,6 +41,7 @@ import Add_certificates from "./components/Admin/Add_certificates.jsx";
 import Edit_article from "./components/Admin/Edit_article.jsx";
 import Edit_book from "./components/Admin/Edit_book.jsx";
 import Edit_magazine from "./components/Admin/Edit_magazine.jsx";
+import Comment from "./components/Admin/Manage_comment.jsx";
 
 function App() {
   return (
@@ -80,6 +81,7 @@ function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={<Dashboard />} />
+        <Route path="/admin/comments" element={<Comment />} />
         <Route path="/admin/add-article" element={<Add_article />} />
         <Route path="/admin/add-magazine" element={<Add_magazine />} />
         <Route path="/admin/add-book" element={<Add_book />} />

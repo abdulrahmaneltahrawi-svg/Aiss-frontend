@@ -78,6 +78,15 @@ function Dashboard() {
 
             <li>
               <Link
+                to="/admin/comments"
+                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
+              >
+                إدارة التعليقات
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 to="/admin/add-article"
                 className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
               >

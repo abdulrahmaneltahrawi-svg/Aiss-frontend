@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Comment({ source, id }) {
+export default function Comment({ source = "article", id }) {
   const [comments, setComments] = useState([]);
   const [commentName, setCommentName] = useState("");
   const [commentEmail, setCommentEmail] = useState("");
@@ -8,13 +8,20 @@ export default function Comment({ source, id }) {
   const [pendingMessage, setPendingMessage] = useState("");
   const [error, setError] = useState("");
 
+  // تحديد مسار الـ API حسب المصدر
+  const getApiPath = () => {
+    if (source === "magazine") return `magazines/${id}/comments`;
+    if (source === "booklet") return `booklets/${id}/comments`;
+    return `articles/${id}/comments`;
+  };
+
   // ==========================================
   // تحميل التعليقات من الخادم
   // ==========================================
 
   async function fetchComments() {
     try {
-      const response = await fetch(`/api/articles/${id}/comments`, {
+      const response = await fetch(`/api/${getApiPath()}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -36,7 +43,7 @@ export default function Comment({ source, id }) {
 
   useEffect(() => {
     fetchComments();
-  }, [id]);
+  }, [id, source]);
 
   // ==========================================
   // إرسال تعليق جديد
@@ -67,7 +74,7 @@ export default function Comment({ source, id }) {
         : "";
 
       // 2. إرسال التعليق
-      const response = await fetch(`/api/articles/${id}/comments`, {
+      const response = await fetch(`/api/${getApiPath()}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -95,9 +102,9 @@ export default function Comment({ source, id }) {
       setCommentEmail("");
       setCommentText("");
 
-      // إعادة تحميل التعليقات (بدون استخدام دالة غير معرّفة)
+      // إعادة تحميل التعليقات
       try {
-        const refreshResponse = await fetch(`/api/articles/${id}/comments`, {
+        const refreshResponse = await fetch(`/api/${getApiPath()}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -134,12 +141,20 @@ export default function Comment({ source, id }) {
       })
     : [];
 
+  // عنوان القسم حسب المصدر
+  const sectionTitle =
+    source === "magazine"
+      ? "تعليقات المجلة"
+      : source === "booklet"
+      ? "تعليقات الكتيب"
+      : "تعليقات المقال";
+
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        {/* عنوان المقال */}
+        {/* عنوان القسم */}
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
-          تعليقات المقال
+          {sectionTitle}
         </h1>
 
         {pendingMessage && (

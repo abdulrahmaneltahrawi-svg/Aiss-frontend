@@ -4,6 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
+import Comment from "../../common/Comment.jsx";
 
 const API_URL = "";
 
@@ -145,6 +146,8 @@ export default function FlipBook() {
           )}
         </div>
       </main>
+              {/* التعليقات */}
+              <Comment source={type} id={id ? id.split("-")[0] : ""} />
       <Footer />
     </>
   );

@@ -28,11 +28,10 @@ export default function Card({
     return (
       <div
         id={`card-${id}`}
-        className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
+        className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-[380px] max-h-[380px] max-[640px]:min-h-[300px] max-[640px]:max-h-[300px] ${className} ${onCardClick ? "cursor-pointer" : ""}`}
         data-aos="fade-up"
         data-aos-delay={aosDelay}
         onClick={onCardClick}
-        style={{ minHeight: "380px", maxHeight: "380px" }}
       >
         {href ? (
           <Link to={href} className="block w-full h-full">
@@ -66,16 +65,15 @@ export default function Card({
   }
 
   const buttonClass =
-    "block w-full p-[8px_15px] bg-linear-to-b from-[#f56874] to-[#e429397e] text-black text-[13px] font-bold text-center rounded-[10px] border border-black transition-all duration-300 ease-in-out mt-1.25 hover:text-[#f7f5f5] m-0";
+    "block w-full p-[8px_15px] bg-linear-to-b from-[#f56874] to-[#e429397e] text-black text-[13px] font-bold text-center rounded-[10px] border border-black transition-all duration-300 ease-in-out mt-1.25 hover:text-[#f7f5f5] m-0 max-[640px]:text-[12px] max-[640px]:p-[6px_10px]";
 
   return (
     <div
       id={`card-${id}`}
-      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
+      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-[380px] max-h-[380px] max-[640px]:min-h-[300px] max-[640px]:max-h-[300px] ${className} ${onCardClick ? "cursor-pointer" : ""}`}
       data-aos="fade-up"
       data-aos-delay={aosDelay}
       onClick={onCardClick}
-      style={{ minHeight: "380px", maxHeight: "380px" }}
     >
       {href ? (
         <Link to={href} className="block">
@@ -87,7 +85,7 @@ export default function Card({
             onError={() => {
               if (src !== fallbackImage) setSrc(fallbackImage);
             }}
-            className="w-full h-67.5 object-cover rounded-t-lg"
+            className="w-full h-67.5 object-cover rounded-t-lg max-[640px]:h-45"
           />
         </Link>
       ) : (
@@ -100,13 +98,13 @@ export default function Card({
             onError={() => {
               if (src !== fallbackImage) setSrc(fallbackImage);
             }}
-            className="w-full h-67.5 object-cover rounded-t-lg"
+            className="w-full h-67.5 object-cover rounded-t-lg max-[640px]:h-45"
           />
         </div>
       )}
       <div className="flex flex-col gap-1.25 flex-1 p-[10px_12px] overflow-hidden justify-center items-center text-center rtl">
         <h3
-          className="text-[0.9rem] leading-[1.3] overflow-hidden font-bold min-h-[1.2em] max-h-[1.2em] mt-2 wrap-break-word"
+          className="text-[0.9rem] leading-[1.3] overflow-hidden font-bold min-h-[1.2em] max-h-[1.2em] mt-2 wrap-break-word max-[640px]:text-[0.8rem]"
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 1,

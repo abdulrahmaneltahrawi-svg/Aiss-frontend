@@ -73,6 +73,7 @@ function Comment() {
         text: item.body,
         approved: item.status === "approved",
         articleRef: item.commentable_id,
+        commentableType: item.commentable_type,
       }));
 
       setCommentsList(items);
@@ -131,6 +132,27 @@ function Comment() {
     } catch (e) {
       console.error("Error rejecting comment:", e);
       alert("حدث خطأ في رفض التعليق");
+    }
+  }
+
+  function viewContent(comment) {
+    const id = comment.commentable_id;
+    const type = (comment.commentable_type || "").toLowerCase();
+
+    console.log("View content - id:", id, "type:", type);
+
+    if (!id) {
+      alert("لا يوجد معرف للمحتوى المرتبط بهذا التعليق");
+      return;
+    }
+
+    if (type.includes("article")) {
+      navigate(`/views?id=${id}`);
+    } else if (type.includes("magazine") || type.includes("booklet") || type.includes("brochure")) {
+      navigate(`/flipbook?id=${id}`);
+    } else {
+      // افتراضياً نعرض المقال
+      navigate(`/views?id=${id}`);
     }
   }
 
@@ -245,6 +267,13 @@ function Comment() {
 
                       <td className="p-3 border-b border-gray-100 text-[12px] text-primary">
                         #{c.articleRef}
+                        <button
+                          type="button"
+                          className="block mt-1 bg-primary text-white py-1 px-2.5 rounded-lg text-[11px] font-bold cursor-pointer hover:bg-primary-dark transition-colors"
+                          onClick={() => viewContent(c)}
+                        >
+                          عرض المحتوى
+                        </button>
                       </td>
 
                       <td className="p-3 border-b border-gray-100 text-[12px] text-[#888]" dir="ltr">

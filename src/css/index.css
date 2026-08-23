@@ -104,4 +104,48 @@
   .btn1 {
     @apply inline-block p-[15px_20px] bg-[whitesmoke] no-underline my-[30px_auto] text-black text-[16px] font-bold rounded-[25px] border border-black cursor-pointer transition-all duration-300 ease-in-out hover:text-gray-500 hover:bg-[#f5f5f5] hover:scale-[1.05];
   }
+
+  /* ==== استعلامات الوسائط للجوال ==== */
+
+  /* شاشات صغيرة (جوال) */
+  @media (max-width: 640px) {
+    .page-hero {
+      @apply h-60 mt-15;
+    }
+
+    .page-hero-title {
+      @apply text-[2.5rem] text-center px-4;
+    }
+
+    .section-title-bar {
+      @apply text-[18px] px-3 py-3.5;
+    }
+
+    .cards-grid {
+      @apply grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 p-[20px_4%];
+    }
+
+    .filter-bar {
+      @apply flex-wrap px-3 py-2 gap-2;
+    }
+
+    .btn1 {
+      @apply p-[12px_16px] text-[14px];
+    }
+  }
+
+  /* شاشات متوسطة (تابلت) */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .page-hero {
+      @apply h-90 mt-18;
+    }
+
+    .page-hero-title {
+      @apply text-[3.5rem] text-center px-4;
+    }
+
+    .section-title-bar {
+      @apply text-[22px];
+    }
+  }
 }

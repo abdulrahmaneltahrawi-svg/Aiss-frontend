@@ -70,6 +70,7 @@ function App() {
         <Route path="/verify" element={<Certificate />} />
         <Route path="/companies" element={<Clients />} />
         <Route path="/actors" element={<Actors />} />
+        <Route path="/certificate" element={<Store />} />
         <Route path="/store" element={<Store />} />
         <Route path="/store/view/:id" element={<View />} />
         <Route path="/store/payment" element={<Payment />} />

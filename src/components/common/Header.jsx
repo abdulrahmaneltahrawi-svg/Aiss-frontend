@@ -162,6 +162,10 @@ function Header() {
             <Link to="/magazine" className={navLinkClass}>المجلات</Link>
           </li>
 
+                    <li>
+            <Link to="/manuals" className={navLinkClass}>الكتيبات</Link>
+          </li>
+
           <li>
             <a
               href="#"
@@ -181,9 +185,6 @@ function Header() {
             </ul>
           </li>
 
-          <li>
-            <Link to="/manuals" className={navLinkClass}>كتيبات السلامة</Link>
-          </li>
           <li>
             <Link to="/cods" className={navLinkClass}>الأكواد والمعايير</Link>
           </li>
@@ -232,17 +233,13 @@ function Header() {
           </li>
 
           <li>
-            <Link to="/verify" className={navLinkClass}>الإعتمادية</Link>
-          </li>
-
-          <li>
             <Link to="/companies" className={navLinkClass}>الشركاء</Link>
           </li>
           <li>
             <Link to="/actors" className={navLinkClass}>الممثلين</Link>
           </li>
           <li>
-            <Link to="/store" className={navLinkClass}>المتجر</Link>
+            <Link to="/certificate" className={navLinkClass}>الشهادات و الإعتمادية</Link>
           </li>
         </ul>
       </nav>

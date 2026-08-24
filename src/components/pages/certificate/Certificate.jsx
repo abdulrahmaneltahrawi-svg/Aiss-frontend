@@ -1,10 +1,123 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
+import Scroll from "../../common/Scroll.jsx";
+import Card from "../../common/Card.jsx";
+
+const FALLBACK_IMG = "/assets/imge/logo-iss-site.jpg.jpeg";
+
+export default function Store() {
+  const navigate = useNavigate();
+
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+
+    fetch("/api/certificate-types")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("فشل في جلب أنواع الشهادات");
+        }
+
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Certificate Types:", data);
+
+        setProducts(
+          data.certificate_types.map((item) => ({
+            id: item.id,
+            title: item.name,
+            price: item.price,
+            image:
+              item.id === 1
+                ? "/assets/store&memberships/0011.webp"
+                : "/assets/store&memberships/0012.webp",
+          }))
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  const viewProduct = (product) => {
+    navigate(`/store/view/${product.id}`);
+  };
+
+  const requestCertificate = (product) => {
+    localStorage.setItem("certificateType", String(product.id));
+    localStorage.setItem("orderTotal", String(product.price));
+
+    navigate("/store/payment");
+  };
+
+  return (
+    <>
+      <Header />
+
+      <div className="page-hero">
+        <img
+          src="/assets/imge/0005.jpg"
+          alt="store-pic"
+          loading="lazy"
+          className="page-hero-bg"
+        />
+
+        <div className="logo-text">
+          <p className="page-hero-title">المتجر</p>
+        </div>
+      </div>
+
+      <main className="page-content">
+        {/* قسم التحقق من الشهادة */}
+        <div className="section-title-bar">
+          <p>التحقق من الشهادة</p>
+        </div>
+
+        <div className="mt-8">
+          <Certificate embedded />
+        </div>
+
+        {/* قسم منتجات المتجر */}
+        <div className="section-title-bar mt-14">
+          <p>الشهادات المعتمدة</p>
+        </div>
+
+        <div className="cards-grid gap-10.5">
+          {products.map((item) => (
+            <Card
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              image={item.image}
+              fallbackImage={FALLBACK_IMG}
+              btnText="طلب شهادة"
+              price={`${item.price} د.ا`}
+              onButtonClick={() => requestCertificate(item)}
+              onCardClick={() => viewProduct(item)}
+            />
+          ))}
+        </div>
+      </main>
+
+      <Scroll />
+      <Footer />
+    </>
+  );
+}
+
+// ============================================================
+// مكوّن التحقق من الشهادات — تم دمجه هنا من Certificate.jsx
+// ============================================================
 
 const API_URL = "";
 
-export default function Certificate() {
+export function Certificate({ embedded = false }) {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -105,12 +218,8 @@ export default function Certificate() {
 
   const status = result ? statusInfo[result.status] || statusInfo.revoked : null;
 
-  return (
-    <>
-      <Header />
-      <main className="page-content">
-        <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
-          <div className="w-full max-w-150">
+  const card = (
+    <div className="w-full max-w-150">
             {/* الترويسة */}
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#eef2ff] mb-4">
@@ -119,7 +228,7 @@ export default function Certificate() {
                 </svg>
               </div>
               <h1 className="text-3xl font-extrabold text-primary mb-2">
-                التحقق من شهادة
+                التحقق من الإعتمادية
               </h1>
               <p className="text-[#94a3b8] text-sm">
                 أدخل كود الشهادة للتحقق من صحتها وصلاحيتها
@@ -254,7 +363,23 @@ export default function Certificate() {
                 </div>
               )}
             </div>
-          </div>
+    </div>
+  );
+
+  if (embedded) {
+    return (
+      <div className="w-full flex justify-center">
+        {card}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Header />
+      <main className="page-content">
+        <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
+          {card}
         </div>
       </main>
       <Footer />

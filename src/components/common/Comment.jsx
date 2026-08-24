@@ -12,6 +12,7 @@ export default function Comment({ source = "article", id }) {
   const getApiPath = () => {
     if (source === "magazine") return `magazines/${id}/comments`;
     if (source === "booklet") return `booklets/${id}/comments`;
+    if (source === "codes") return `code-standards/${id}/comments`;
     return `articles/${id}/comments`;
   };
 
@@ -147,6 +148,8 @@ export default function Comment({ source = "article", id }) {
       ? "تعليقات المجلة"
       : source === "booklet"
       ? "تعليقات الكتيب"
+      : source === "codes"
+      ? "تعليقات الكود"
       : "تعليقات المقال";
 
   return (

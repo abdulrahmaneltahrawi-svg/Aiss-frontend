@@ -148,8 +148,15 @@ function Comment() {
 
     if (type.includes("article")) {
       navigate(`/views?id=${id}`);
-    } else if (type.includes("magazine") || type.includes("booklet") || type.includes("brochure")) {
+    } else if (
+      type.includes("magazine") ||
+      type.includes("booklet") ||
+      type.includes("brochure")
+    ) {
       navigate(`/flipbook?id=${id}`);
+    } else if (type.includes("code") || type.includes("standard")) {
+      // تعليق على كود/معيار -> نفتح صفحة تفاصيل هذا الكود (المصدر: codes)
+      navigate(`/views?id=${id}&source=codes`);
     } else {
       // افتراضياً نعرض المقال
       navigate(`/views?id=${id}`);

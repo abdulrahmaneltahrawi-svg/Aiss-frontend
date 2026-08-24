@@ -28,7 +28,7 @@ export default function Card({
     return (
       <div
         id={`card-${id}`}
-        className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-[380px] max-h-[380px] max-[640px]:min-h-[300px] max-[640px]:max-h-[300px] ${className} ${onCardClick ? "cursor-pointer" : ""}`}
+        className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-95 max-h-95 max-[640px]:min-h-75 max-[640px]:max-h-75 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
         data-aos="fade-up"
         data-aos-delay={aosDelay}
         onClick={onCardClick}
@@ -70,7 +70,7 @@ export default function Card({
   return (
     <div
       id={`card-${id}`}
-      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-[380px] max-h-[380px] max-[640px]:min-h-[300px] max-[640px]:max-h-[300px] ${className} ${onCardClick ? "cursor-pointer" : ""}`}
+      className={`w-full max-w-87.5 bg-[#f1f1f1] rounded-[30px] shadow-[0px_2px_4px_rgba(0,0,0,0.2)] relative overflow-hidden z-1 flex flex-col animate-card-fade-in hover:scale-[1.03] hover:shadow-[0_10px_20px_rgba(0,0,0,0.15)] hover:transition-all hover:duration-300 hover:z-10 min-h-95 max-h-95 max-[640px]:min-h-75 max-[640px]:max-h-75 ${className} ${onCardClick ? "cursor-pointer" : ""}`}
       data-aos="fade-up"
       data-aos-delay={aosDelay}
       onClick={onCardClick}

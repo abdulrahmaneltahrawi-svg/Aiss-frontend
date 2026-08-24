@@ -6,8 +6,6 @@ import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Comment from "../../common/Comment.jsx";
 
-// أكواد ثابتة
-import { codesData } from "./Code.jsx";
 // بيانات الفعاليات
 import events from "../events/eventsData.js";
 
@@ -84,27 +82,48 @@ export default function ViewArticle() {
 
       try {
         // ==========================================
-        // الأكواد الثابتة
+        // الأكواد والمعايير
         // ==========================================
         if (source === "codes") {
-          const found = codesData.find((c, idx) => {
-            const slug = c.title
-              .replace(/[^\u0600-\u06FFa-zA-Z0-9]+/g, "-")
-              .replace(/^-+|-+$/g, "");
+          const numericId = id ? parseInt(id.split("-")[0], 10) : NaN;
 
-            return slug === id || idx + 1 === parseInt(id);
-          });
+          // إذا كان الرابط يحمل رقم معرف من قاعدة البيانات -> نجلب من الـ API
+          if (!Number.isNaN(numericId)) {
+            try {
+              const response = await fetch(
+                `${API_URL}/api/code-standards/${numericId}`,
+                {
+                  method: "GET",
+                  headers: {
+                    Accept: "application/json",
+                  },
+                }
+              );
 
-          if (found) {
-            setArticle({
-              title: found.title,
-              image: found.image,
-              content: found.content,
-              source: "codes",
-            });
-          } else {
-            setError("لم يتم العثور على الكود المطلوب");
+              const data = await response.json();
+
+              if (response.ok) {
+                const item = data.code_standard || data;
+
+                setArticle({
+                  ...item,
+                  title: item.title || item.titlesubject || "",
+                  image:
+                    item.cover_image_url ||
+                    fixStoragePath(item.cover_image) ||
+                    FALLBACK_IMG,
+                  content: item.content || "",
+                  source: "codes",
+                });
+                setLoading(false);
+                return;
+              }
+            } catch (err) {
+              console.error("Error fetching code standard:", err);
+            }
           }
+
+          setError("لم يتم العثور على الكود المطلوب");
         }
 
         // ==========================================
@@ -374,7 +393,7 @@ export default function ViewArticle() {
         </div>
 
         {/* صورة المقال */}
-        <div className="max-w-350 mx-auto my-5 px-5">
+        <div className="max-w-250 mx-auto my-5 px-5">
           <img
             src={article.image || FALLBACK_IMG}
             alt={article.title}

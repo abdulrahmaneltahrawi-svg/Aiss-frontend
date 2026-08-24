@@ -42,6 +42,8 @@ import Edit_article from "./components/Admin/Edit_article.jsx";
 import Edit_book from "./components/Admin/Edit_book.jsx";
 import Edit_magazine from "./components/Admin/Edit_magazine.jsx";
 import Comment from "./components/Admin/Manage_comment.jsx";
+import Add_code from "./components/Admin/Add_code.jsx";
+import Edit_code from "./components/Admin/Edit_code.jsx";
 
 function App() {
   return (
@@ -91,6 +93,8 @@ function App() {
         <Route path="/admin/edit-article/:id" element={<Edit_article />} />
         <Route path="/admin/edit-book/:id" element={<Edit_book />} />
         <Route path="/admin/edit-magazine/:id" element={<Edit_magazine />} />
+        <Route path="/admin/add-code" element={<Add_code />} />
+        <Route path="/admin/edit-code/:id" element={<Edit_code />} />
       </Routes>
     </BrowserRouter>
   );

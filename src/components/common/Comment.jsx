@@ -13,6 +13,7 @@ export default function Comment({ source = "article", id }) {
     if (source === "magazine") return `magazines/${id}/comments`;
     if (source === "booklet") return `booklets/${id}/comments`;
     if (source === "codes") return `code-standards/${id}/comments`;
+    if (source === "conference") return `conferences/${id}/comments`;
     return `articles/${id}/comments`;
   };
 
@@ -150,6 +151,8 @@ export default function Comment({ source = "article", id }) {
       ? "تعليقات الكتيب"
       : source === "codes"
       ? "تعليقات الكود"
+      : source === "conference"
+      ? "تعليقات المؤتمر"
       : "تعليقات المقال";
 
   return (
@@ -249,7 +252,7 @@ export default function Comment({ source = "article", id }) {
                     {comment.created_at}
                   </span>
                 </div>
-                <p className="text-gray-700 mt-2 leading-relaxed">
+                <p className="text-gray-700 mt-2 leading-relaxed whitespace-pre-wrap break-words">
                   {comment.body}
                 </p>
               </div>

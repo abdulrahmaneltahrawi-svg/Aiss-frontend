@@ -7,6 +7,8 @@ function Comment() {
   const [commentsList, setCommentsList] = useState([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [selectedComment, setSelectedComment] = useState(null); // التعليق المعروض في نافذة التفاصيل
+  const [copiedId, setCopiedId] = useState(null); // معرف التعليق الذي تم نسخ نصه
 
   const navigate = useNavigate();
 
@@ -148,6 +150,9 @@ function Comment() {
 
     if (type.includes("article")) {
       navigate(`/views?id=${id}`);
+    } else if (type.includes("conference")) {
+      // تعليق على مؤتمر -> صفحة تفاصيل المؤتمر (المعرف في المسار)
+      navigate(`/conferences/${id}`);
     } else if (
       type.includes("magazine") ||
       type.includes("booklet") ||
@@ -171,6 +176,24 @@ function Comment() {
     if (!xsrfCookie) return "";
 
     return decodeURIComponent(xsrfCookie.split("=")[1]);
+  }
+
+  // فتح نافذة تفاصيل التعليق الكامل
+  function openCommentDetails(comment) {
+    setSelectedComment(comment);
+  }
+
+  // نسخ نص التعليق إلى الحافظة
+  async function copyComment(comment) {
+    const text = comment.text !== undefined ? comment.text : comment.body;
+    try {
+      await navigator.clipboard.writeText(text || "");
+      setCopiedId(comment.id);
+      setTimeout(() => setCopiedId(null), 1500);
+    } catch (e) {
+      console.error("Copy error:", e);
+      alert("تعذر نسخ النص");
+    }
   }
 
   const totalCount = commentsList.length;
@@ -240,6 +263,7 @@ function Comment() {
         </div>
 
 
+
         {/* جدول التعليقات */}
         <div className="bg-white rounded-xl shadow-sm p-5">
           <h3 className="text-accent mb-4">التعليقات</h3>
@@ -269,7 +293,17 @@ function Comment() {
                       </td>
 
                       <td className="p-3 border-b border-gray-100 text-[#555] max-w-70">
-                        {c.text}
+                        <div className="line-clamp-3 leading-relaxed text-[#555]">
+                          {c.text}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="text-primary text-[12px] font-bold cursor-pointer hover:underline transition-colors mt-2"
+                          onClick={() => openCommentDetails(c)}
+                        >
+                          👁️ التفاصيل (عرض كامل)
+                        </button>
                       </td>
 
                       <td className="p-3 border-b border-gray-100 text-[12px] text-primary">
@@ -294,7 +328,7 @@ function Comment() {
                           </span>
                         ) : (
                           <span className="bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full text-[12px] font-bold">
-                            ⏳ بانتظار
+                             بانتظار
                           </span>
                         )}
                       </td>
@@ -337,6 +371,115 @@ function Comment() {
              الرجوع للموقع
           </Link>
         </div>
+
+        {/* نافذة تفاصيل التعليق (عرض كامل) */}
+        {selectedComment && (
+          <div
+            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in-down"
+            onClick={(e) => e.target === e.currentTarget && setSelectedComment(null)}
+          >
+            <div className="bg-white rounded-[18px] shadow-[0_20px_60px_rgba(0,0,0,0.25)] w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">
+              {/* رأس النافذة */}
+              <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200 bg-[#f9f9f9]">
+                <h3 className="text-lg font-bold text-primary">💬 تفاصيل التعليق</h3>
+                <button
+                  type="button"
+                  onClick={() => setSelectedComment(null)}
+                  className="w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-900 text-lg font-bold"
+                  aria-label="إغلاق"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* محتوى النافذة */}
+              <div className="px-5 py-4 overflow-y-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm">
+                  <div>
+                    <span className="text-gray-400 block text-xs mb-1">الاسم</span>
+                    <span className="font-bold text-[#333]">{selectedComment.name || "-"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block text-xs mb-1">البريد الإلكتروني</span>
+                    <span className="font-bold text-[#333] break-all" dir="ltr">
+                      {selectedComment.email || "-"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block text-xs mb-1">التاريخ</span>
+                    <span className="font-bold text-[#333]" dir="ltr">
+                      {selectedComment.created_at || "-"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block text-xs mb-1">الحالة</span>
+                    {selectedComment.approved ? (
+                      <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-[12px] font-bold">
+                        ✓ مقبول
+                      </span>
+                    ) : (
+                      <span className="bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full text-[12px] font-bold">
+                        ⏳ بانتظار
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <span className="text-gray-400 block text-xs mb-1">التعليق الكامل</span>
+                  <div className="bg-[#fafafa] border border-gray-200 rounded-lg p-4 max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed text-[#333] text-[15px]">
+                    {selectedComment.text}
+                  </div>
+                </div>
+              </div>
+
+              {/* أزرار النافذة */}
+              <div className="px-5 py-3 border-t border-gray-200 bg-[#f9f9f9] flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => copyComment(selectedComment)}
+                  className="bg-gray-100 text-[#444] py-1.5 px-3 rounded-lg text-[12px] font-bold cursor-pointer hover:bg-gray-300 transition-colors"
+                >
+                  {copiedId === selectedComment.id ? "✓ تم النسخ" : "📋 نسخ النص"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => viewContent(selectedComment)}
+                  className="bg-primary text-white py-1.5 px-3 rounded-lg text-[12px] font-bold cursor-pointer hover:bg-primary-dark transition-colors"
+                >
+                  📄 عرض المحتوى
+                </button>
+
+                {!selectedComment.approved && (
+                  <button
+                    type="button"
+                    onClick={() => { approveComment(selectedComment.id); setSelectedComment(null); }}
+                    className="bg-green-500 text-white py-1.5 px-3 rounded-lg text-[12px] font-bold cursor-pointer hover:bg-green-600 transition-colors"
+                  >
+                    ✓ قبول
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => { rejectComment(selectedComment.id); setSelectedComment(null); }}
+                  className="bg-accent text-white py-1.5 px-3 rounded-lg text-[12px] font-bold cursor-pointer hover:bg-accent-dark transition-colors"
+                >
+                  ✕ رفض
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedComment(null)}
+                  className="bg-gray-100 text-[#444] py-1.5 px-3 rounded-lg text-[12px] font-bold cursor-pointer hover:bg-gray-400 transition-colors"
+                >
+                  إغلاق
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         </main>
       </div>

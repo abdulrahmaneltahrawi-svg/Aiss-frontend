@@ -43,6 +43,9 @@ import Edit_magazine from "./components/Admin/Edit_magazine.jsx";
 import Comment from "./components/Admin/Manage_comment.jsx";
 import Add_code from "./components/Admin/Add_code.jsx";
 import Edit_code from "./components/Admin/Edit_code.jsx";
+import Add_conferences from "./components/Admin/Add_conferences.jsx";
+import Edit_conferences from "./components/Admin/Edit_conferences.jsx";
+import ConferenceDetails from "./components/pages/conferences/ConferenceDetails.jsx";
 
 function App() {
   return (
@@ -64,6 +67,7 @@ function App() {
         <Route path="/flipbook" element={<FlipBook />} />
         <Route path="/conference" element={<Conferences />} />
         <Route path="/conferences" element={<Conferences />} />
+        <Route path="/conferences/:id" element={<ConferenceDetails />} />
         <Route path="/medal" element={<Medal />} />
         <Route path="/event" element={<Events />} />
         <Route path="/event_add" element={<EventAdd />} />
@@ -95,6 +99,8 @@ function App() {
         <Route path="/admin/edit-magazine/:id" element={<Edit_magazine />} />
         <Route path="/admin/add-code" element={<Add_code />} />
         <Route path="/admin/edit-code/:id" element={<Edit_code />} />
+        <Route path="/admin/add-conferences" element={<Add_conferences />} />
+        <Route path="/admin/edit-conference/:id" element={<Edit_conferences />} />
       </Routes>
     </BrowserRouter>
   );

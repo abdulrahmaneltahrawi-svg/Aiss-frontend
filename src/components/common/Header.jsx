@@ -190,24 +190,7 @@ function Header() {
           </li>
 
           <li>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleSubmenu("conference");
-              }}
-              className={`${navLinkClass} ${openSubmenu === "conference" ? "text-accent" : ""}`}
-            >
-              مؤتمرات السلامة ⬐
-            </a>
-            <ul className={submenuClass(openSubmenu === "conference")}>
-              <li><Link to="/conference?conf=1" className={navSubLinkClass}>مؤتمر السلامة الأول (2020)</Link></li>
-              <li><Link to="/conference?conf=2" className={navSubLinkClass}>مؤتمر السلامة الثاني (2021)</Link></li>
-              <li><Link to="/conference?conf=3" className={navSubLinkClass}>مؤتمر السلامة الثالث (2022)</Link></li>
-              <li><Link to="/conference?conf=4" className={navSubLinkClass}>مؤتمر السلامة الرابع (2023)</Link></li>
-              <li><Link to="/conference?conf=5" className={navSubLinkClass}>مؤتمر السلامة الخامس (2024)</Link></li>
-            </ul>
+            <Link to="/conferences" className={navLinkClass}>مؤتمرات السلامة</Link>
           </li>
 
           <li>

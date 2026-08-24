@@ -132,6 +132,15 @@ function Dashboard() {
 
             <li>
               <Link
+                to="/admin/add-conferences"
+                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
+              >
+                إضافة مؤتمر
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 to="/admin/add-certificates"
                 className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
               >

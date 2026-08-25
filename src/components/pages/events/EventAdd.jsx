@@ -1,59 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 
-const events = [
-  {
-    img: "assets/event_add/Picture24.jpg",
-    date: "يناير 2026",
-    title: "زيارة الجمعية الثقافية والرياضية لرجال الإطفاء - برشلونة",
-    desc: "تشرف د. محمد كمال ود. الخضري بزيارة المقر لتعزيز سبل التعاون الدولي.",
-    size: "large",
-  },
-  {
-    img: "assets/event_add/Picture25.jpg",
-    date: "مارس 2024",
-    title: "معرض اليوم العالمي للدفاع المدني - السعودية",
-    desc: 'مشاركة المعهد تحت رعاية سمو الأمير سعود بن بندر في "الظهران إكسبو".',
-    size: "medium",
-  },
-  {
-    img: "assets/event_add/Picture26.jpg",
-    date: "مارس 2024",
-    title: "ملتقى السلامة المرورية الأول - الكويت",
-    desc: "تمثيل المعهد بواسطة المهندس عبد الله حمود الغريب.",
-    size: "medium",
-  },
-  {
-    img: "assets/event_add/Picture27.jpg",
-    date: "أكتوبر 2023",
-    title: "معرض عُمان للحرائق والسلامة والأمن - مسقط",
-    desc: "مشاركة فاعلة للمعهد في مركز عُمان للمؤتمرات والمعارض.",
-    size: "medium",
-  },
-  {
-    img: "assets/event_add/Picture34.jpg",
-    date: "يوليو 2023",
-    title: "تكريم نقيب المهندسين المصريين - القاهرة",
-    desc: "تقديم درع السلامة العربي للمهندس طارق النبراوي تقديراً لجهوده في تطوير علوم السلامة.",
-    size: "large",
-  },
-  {
-    img: "assets/event_add/Picture35.jpg",
-    date: "ديسمبر 2025",
-    title:
-      'مؤتمر "جودة تصنيع الغذاء والزراعة الذكية وإعادة تأهيل الموارد البشرية"',
-    desc: 'انطلقت فعاليات مؤتمر "جودة تصنيع الغذاء والزراعة الذكية وإعادة تأهيل الموارد البشرية" الذي تنظمه شركة EMBS للهندسة الإدارية والجودة، ممثلا في فريق ممثلي المعهد العربي لعلوم السلامة بسوريا، بالتعاون مع كلية الهندسة الزراعية بجامعة دمشق، وذلك على مدرج الجامعة.',
-    size: "large",
-  },
-];
+// تنسيق تاريخ الفعالية (2026-02-22 -> فبراير 2026)
+function formatEventDate(dateStr) {
+  if (!dateStr) return "";
+  const months = [
+    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر",
+  ];
+  const parts = dateStr.split("-");
+  if (parts.length < 2) return dateStr;
+  const year = parts[0];
+  const month = parseInt(parts[1], 10);
+  const monthName = months[month - 1] || parts[1];
+  return `${monthName} ${year}`;
+}
 
 export default function EventAdd() {
+  const [events, setEvents] = useState([]);
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
+
+    // جلب الفعاليات من الـ API
+    fetch("/api/events")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("فشل جلب الفعاليات");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const items = Array.isArray(data)
+          ? data
+          : data.events || data.data || [];
+        setEvents(items);
+      })
+      .catch((err) => {
+        console.error(err);
+        setEvents([]);
+      });
   }, []);
 
   return (
@@ -75,12 +65,26 @@ export default function EventAdd() {
               data-aos="fade-up"
             >
               <div className="w-full h-150 overflow-hidden relative">
-                <img src={event.img} alt={event.title} loading="lazy" className="w-full h-full object-cover block transition-transform duration-500 ease-in-out hover:scale-[1.1]" />
+                {event.image_url || event.image ? (
+                  <img src={event.image_url || event.image} alt={event.title} loading="lazy" className="w-full h-full object-cover block transition-transform duration-500 ease-in-out hover:scale-[1.1]" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[#f0f0f0] text-[#999]">
+                    لا توجد صورة
+                  </div>
+                )}
               </div>
               <div className="p-3.75">
-                <span className="text-[#e63946] text-[0.85rem] font-bold">{event.date}</span>
+                {event.event_date && (
+                  <span className="text-[#e63946] text-[0.85rem] font-bold">
+                    {formatEventDate(event.event_date)}
+                  </span>
+                )}
                 <h3 className="my-[10px_0] text-[1.2rem] text-[#1d3557]">{event.title}</h3>
-                <p className="leading-[1.6] text-[#555]">{event.desc}</p>
+                {event.description && (
+                  <div className="leading-[1.6] text-[#555] ql-editor"
+                    dangerouslySetInnerHTML={{ __html: event.description }}
+                  />
+                )}
               </div>
             </article>
           ))}

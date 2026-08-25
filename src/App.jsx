@@ -47,6 +47,12 @@ import Add_conferences from "./components/Admin/Add_conferences.jsx";
 import Add_Competitions from "./components/Admin/Add_Competitions.jsx";
 import Edit_Competitions from "./components/Admin/Edit_Competitions.jsx";
 import Edit_conferences from "./components/Admin/Edit_conferences.jsx";
+import Add_actor from "./components/Admin/Add_actor.jsx";
+import Edit_actor from "./components/Admin/Edit_actor.jsx";
+import Manage_actor from "./components/Admin/Manage_actor.jsx";
+import Add_event from "./components/Admin/Add_event.jsx";
+import Edit_event from "./components/Admin/Edit_event.jsx";
+import Manage_event from "./components/Admin/Manage_event.jsx";
 import ConferenceDetails from "./components/pages/events/View_Events.jsx";
 
 function App() {
@@ -105,6 +111,12 @@ function App() {
         <Route path="/admin/edit-code/:id" element={<Edit_code />} />
         <Route path="/admin/add-conferences" element={<Add_conferences />} />
         <Route path="/admin/add-competitions" element={<Add_Competitions />} />
+        <Route path="/admin/add-actor" element={<Add_actor />} />
+        <Route path="/admin/edit-actor/:id" element={<Edit_actor />} />
+        <Route path="/admin/manage-actors" element={<Manage_actor />} />
+        <Route path="/admin/add-event" element={<Add_event />} />
+        <Route path="/admin/edit-event/:id" element={<Edit_event />} />
+        <Route path="/admin/manage-events" element={<Manage_event />} />
         <Route path="/admin/edit-competition/:id" element={<Edit_Competitions />} />
         <Route path="/admin/edit-conference/:id" element={<Edit_conferences />} />
       </Routes>

@@ -5,30 +5,6 @@ import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 
-const actorsData = [
-  { img: "assets/Actors/Picture1.jpg", country: "الأردن", name: "د. م سامي عمارنة (كبير ممثلي المعهد)", desc: "خبير ومستشار معتمد لأنظمة إدارة الجودة والسلامة والبيئة / خبير في سلامة العمليات", extra: "مدرب دولي TapRoot معتمد", email: "sami.amarneh@aiss.co" },
-  { img: "assets/Actors/Picture2.jpg", country: "الأردن", name: "م. تمارا الخضور", desc: "عضو الادارة التنفيذية و مسؤولة البحث والتطوير بالمعهد العربي لعلوم السلامة ومديرة السلامة والصحة والبيئة في شركة العقبة لادارة وتشغيل الموانئ", email: "tamara.alkhdour@aiss.co" },
-  { img: "assets/Actors/Picture3.jpg", country: "الأردن", name: "د. مها الشيخ", desc: "استاذ مساعد في إدارة سلسلة الإمداد - جامعة الشرق مستشارة معتمدة في إدارة سلسلة الإمداد في الولايات المتحدة", email: "maha.sheikh@aiss.co" },
-  { img: "assets/Actors/Picture4.jpg", country: "تونس", name: "م. الحسين البكوش (كبير ممثلي المعهد)", desc: "خبير دولي في السلامة والصحة المهنية مكون للمكونين مع منظمة العمل الدولية", email: "houcine.bacouch@aiss.co" },
-  { img: "assets/Actors/Picture5.jpg", country: "تونس", name: "د. عبير العيّادي", desc: "دكتورة في الطب، مختصّة في طب الشغل والأمراض المهنية مساعدة استشفائية جامعية بكلية الطب بتونس", email: "Abeer.Al.Ayadi@aiss.co" },
-  { img: "assets/Actors/Picture6.jpg", country: "فلسطين", name: "أ. مالك سلهب (كبير ممثلي المعهد)", desc: "استاذ السلامة والصحة المهنية في جامعة بوليتكنك فلسطين حاصل على ماجستير في السلامة والصحة المهنية وإدارة البيئة – بريطانيا", email: "m.salhab@aiss.co" },
-  { img: "assets/Actors/Picture7.jpg", country: "فلسطين", name: "م. سامر المصرى", desc: "ماجستير إدارة هندسية ... استشاري ومدرب معتمد في السلامة العامة والصحة المهنية والبيئة", email: "samer.almasri@aiss.co" },
-  { img: "assets/Actors/Picture8.jpg", country: "فلسطين", name: "أ. هبة ماهر عجلوني", desc: "أ. علوم البيئة والسلامة والصحة المهنية", email: "heba.maher.abu.alfilat@aiss.co" },
-  { img: "assets/Actors/Picture9.jpg", country: "مصر", name: "م. محمد شتلة (كبير ممثلي المعهد)", desc: "خبير و استشاري السلامة و الصحة المهنية ومدير التدريب بمشروع منتجع رأس الحكمة للمبيعات . بشركة أوراسكوم للإنشاءات", email: "mohamed.shetla@aiss.co" },
-  { img: "assets/Actors/Picture10.jpg", country: "مصر", name: "د. سماح عبد الرحمن", desc: "مدير إدارة السلامة والصحة المهنية لمستشفيات الأمانة العامة للصحة النفسية", email: "tamara.alkhdour@aiss.co" },
-  { img: "assets/Actors/Picture11.jpg", country: "مصر", name: "م. خلود خالد", desc: "مهندسة سلامة وصحة مهنية وحماية البيئة", email: "kholoud.khaled@aiss.co" },
-  { img: "assets/Actors/Picture12.jpg", country: "مصر", name: "م. كريم أسامة", desc: "مهندس سلامة وصحة مهنية", email: "karim.osama@aiss.co" },
-  { img: "assets/Actors/Picture13.jpg", country: "لبنان", name: "د. حوراء حاموش (كبير ممثلي المعهد)", desc: "أخصائية جلد وتجميل، حاصلة البورد الأوروبي في التغذية العلاجية وسلامة الغذاء، ماجستير في إدارة الأعمال الدولية ومدربة دولية", email: "hawraa.hamouche@aiss.co" },
-  { img: "assets/Actors/Picture14.jpg", country: "لبنان", name: "د. هبة دهيني", desc: "أخصائية تغذية علاجية ومدرّسة جامعية حائزة على الدراسات العليا بخبرة تفوق ال ٨ سنوات", email: "Heba.Yassin.Duhaini@aiss.co" },
-  { img: "assets/Actors/Picture15.jpg", country: "لبنان", name: "د. نور الهدي دهيني", desc: "اختصاصية تغذية علاجية، حائزة على شهادة ماجستير في ادارة الاعمال وخبرة اكثر من ١٠ سنوات في مجال التغذية السريرية والتسويق", email: "noor.duhaini@aiss.co" },
-  { img: "assets/Actors/Picture16.jpg", country: "اليمن", name: "مستشار شهاب الصهباني", desc: "باحث و مدرب و استشاري البناء المؤسسي، الصحة و السلامة المهنية، الإدارة الصحية و مكافحة العدوى", email: "shehab.sahbani@aiss.co" },
-  { img: "assets/Actors/Picture17.jpg", country: "سوريا", name: "م. إسراء حمدان", desc: "مدقق رئيس معتمد لأنظمة الجودة والصحة والسلامة المهنية والبيئة و عضو لجنة استشارية بمنظمة (الأونروا) و مؤسس شركة EMBS", email: "esraa.hamdan@aiss.co" },
-  { img: "assets/Actors/Picture18.jpg", country: "سوريا", name: "د. محمد إياد الزعيم", desc: "استشاري بناء قدرات وحوكمة المنظمات", email: "Iyad.AlZaeem@aiss.co" },
-  { img: "assets/Actors/Picture19.jpg", country: "المغرب", name: "الاستشاري رشيد كروح", desc: "مدرب و استشاري في مجال السلامة والصحة المهنية استشاري في مجال ريادة الأعمال", email: "Rashid.Karouh@aiss.co" },
-  { img: "assets/Actors/Picture20.jpg", country: "السعودية", name: "م. هاني إبراهيم العليوي", desc: "الرئيس التنفيذي للجمعية السعودية للسلامة والاطفاء. خبير في السلامة والأمن والحريق.", email: "hani@aiss.co" },
-  { img: "assets/Actors/Picture21.jpg", country: "البحرين", name: "م. آدم البربري", desc: "خبير السلامة والصحة المهنية - مملكة البحرين", email: "adam.barbari@aiss.co" },
-  { img: "assets/Actors/Picture22.jpg", country: "عمان", name: "م. يوسف السيابي", desc: "رئيس قسم السلامة والصحة المهنية والبيئة بجامعة الشرقية- سلطنة عمان", email: "yusef.siabi@aiss.co" }
-];
 
 const countries = [
   { name: "مصر", top: "41%", left: "61%" },
@@ -46,9 +22,29 @@ const countries = [
 export default function Actors() {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedActor, setSelectedActor] = useState(null);
+  const [actorsData, setActorsData] = useState([]);
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
+
+    // جلب الممثلين من الـ API
+    fetch("/api/actors")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("فشل جلب الممثلين");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const items = Array.isArray(data)
+          ? data
+          : data.actors || data.data || [];
+        setActorsData(items);
+      })
+      .catch((err) => {
+        console.error(err);
+        setActorsData([]);
+      });
   }, []);
 
   // الممثلون الظاهرون حالياً
@@ -146,15 +142,12 @@ export default function Actors() {
               data-country={actor.country}
             >
               <div className="h-75 bg-white flex items-center justify-center p-3.75 border-b border-[#eee]">
-                <img src={actor.img} alt={actor.name} loading="lazy" className="w-full h-full object-cover" />
+                <img src={actor.image_url || actor.image} alt={actor.name} loading="lazy" className="w-full h-full object-cover" />
               </div>
               <div className="p-5 grow text-right">
                 <span className="bg-[#e1f5fe] text-primary px-2.5 py-1 rounded-[20px] text-[12px] font-bold inline-block text-center mb-2.5">{actor.country}</span>
                 <h3 className="m-0 mb-2.5 text-[18px] text-[#2c3e50] leading-[1.4] text-right">{actor.name}</h3>
-                <p className="m-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.desc}</p>
-                {actor.extra && (
-                  <p className="mt-2.5 mb-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.extra}</p>
-                )}
+                <p className="m-0 text-[14px] leading-[1.6] text-[#666] text-right">{actor.description}</p>
                 <div className="mt-2.5 text-right">
                   <span className="text-[12px] font-bold text-[#888] block text-right">البريد الإلكتروني:</span>
                   <a href={`mailto:${actor.email}`} className="block text-[#2980b9] text-[13px] no-underline text-right break-all">
@@ -164,7 +157,7 @@ export default function Actors() {
               </div>
             </div>
           ))}
-        </div>
+        </div> 
       </main>
       <Scroll />
       <Footer />

@@ -5,42 +5,118 @@ import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 import Card from "../../common/Card.jsx";
-import events from "./eventsData.js";
 
 const FALLBACK_IMG = "assets/icons/logo.webp";
+const API_URL = "";
 
-// فقط 4 مسابقات - كل مسابقة تشير إلى id الفعالية في eventsData
-const COMPETITIONS = [
-  {
-    id: 1,
-    title: "مسابقة السلامة العربية - الدورة الأولى",
-    image: "assets/events/photo/event (1).webp",
-    eventId: 3
-  },
-  {
-    id: 2,
-    title: "مسابقة السلامة العربية - الدورة الثانية",
-    image: "assets/events/photo/event (2).webp",
-    eventId: 4
-  },
-  {
-    id: 3,
-    title: "مسابقة السلامة العربية - الدورة الثالثة",
-    image: "assets/events/photo/event (3).webp",
-    eventId: 7
-  },
-  {
-    id: 4,
-    title: "مسابقة السلامة العربية - الدورة الرابعة",
-    image: "assets/events/photo/event (4).webp",
-    eventId: 9
+// المسار المطابق للمسار الخلفي: Route::get('/competitions', [CompetitionController::class, 'index']);
+const GET_URL = `${API_URL}/api/competitions`;
+
+function getXsrfToken() {
+  const cookie = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
+// معالجة مسار صورة المسابقة من Laravel storage (نفس نمط Conferences.jsx)
+function fixStoragePath(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/")) return path;
+  if (path.startsWith("competitions/")) {
+    return `http://localhost/aiss-backend/public/storage/${path}`;
   }
-];
+  return `http://127.0.0.1:8000/storage/${path}`;
+}
 
 export default function Events() {
+  // قائمة المسابقات من الـ API (GET /api/competitions)
+  const [competitions, setCompetitions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
+
+    async function loadCompetitions() {
+      try {
+        const response = await fetch(GET_URL, {
+          method: "GET",
+          headers: { Accept: "application/json" },
+        });
+
+        const data = await response.json();
+
+        const list = Array.isArray(data)
+          ? data
+          : (data.competitions || data.data || []);
+
+        // ترتيب تصاعدي
+        list.sort((a, b) => a.id - b.id);
+        setCompetitions(list);
+      } catch (err) {
+        console.error("Error fetching competitions:", err);
+        setCompetitions([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCompetitions();
+
+    // فحص صلاحية المشرف
+    fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const user = data.user || data;
+        if (user && (user.role === "admin" || user.can_add_article == 1)) {
+          setIsAdmin(true);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  // حذف مسابقة: Route::delete('/competitions/{competition}', [CompetitionController::class, 'destroy']);
+  async function deleteCompetition(id) {
+    if (!confirm("هل أنت متأكد من حذف هذه المسابقة؟")) return;
+
+    try {
+      // الحصول على CSRF Cookie
+      await fetch(`${API_URL}/sanctum/csrf-cookie`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const xsrfToken = getXsrfToken();
+
+      const response = await fetch(`${API_URL}/api/competitions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": xsrfToken,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        alert("تم حذف المسابقة بنجاح");
+        setCompetitions((prev) => prev.filter((c) => c.id != id));
+      } else {
+        alert("فشل الحذف: " + (data.message || "خطأ غير معروف"));
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("حدث خطأ في الاتصال بالسيرفر");
+    }
+  }
 
   return (
     <>
@@ -99,22 +175,34 @@ export default function Events() {
             </div>
           </div>
 
-          {/* دورات المسابقة - 4 كروت فقط */}
+          {/* دورات مسابقة السلامة العربية */}
           <div className="section-title-bar mt-10">
             <p>دورات مسابقة السلامة العربية</p>
           </div>
-          <div className="cards-grid">
-            {COMPETITIONS.map((item) => (
-              <Card
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                image={item.image}
-                fallbackImage={FALLBACK_IMG}
-                href={`/views?id=${item.eventId}&source=events`}
-                btnText="عرض التفاصيل"
-              />
-            ))}
+          <div className="cards-grid" style={{ minHeight: "200px" }}>
+            {loading ? (
+              <p className="text-center w-full p-12">
+                جاري تحميل المسابقات...
+              </p>
+            ) : competitions.length === 0 ? (
+              <p className="text-center w-full p-12">
+                لا توجد مسابقات حالياً.
+              </p>
+            ) : (
+              competitions.map((item) => (
+                <Card
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  image={item.image_url || fixStoragePath(item.image)}
+                  fallbackImage={FALLBACK_IMG}
+                  href={`/competitions/${item.id}`}
+                  btnText="عرض التفاصيل"
+                  editLink={isAdmin ? `/admin/edit-competition/${item.id}` : undefined}
+                  onDelete={isAdmin ? () => deleteCompetition(item.id) : undefined}
+                />
+              ))
+            )}
           </div>
         </section>
       </main>

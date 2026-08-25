@@ -6,13 +6,12 @@ import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Comment from "../../common/Comment.jsx";
 
-// بيانات الفعاليات
-import events from "../events/eventsData.js";
 
-const FALLBACK_IMG = "assets/imge/0006.jpg";
 
 // Laravel API
 const API_URL = "";
+
+const FALLBACK_IMG = "assets/imge/0006.jpg";
 
 // معالجة مسارات الصور داخل محتوى HTML
 function fixContentImages(html) {
@@ -39,18 +38,7 @@ function fixStoragePath(path) {
   if (!path) return FALLBACK_IMG;
   if (path.startsWith("http")) return path;
   if (path.startsWith("/")) return path;
-  if (path.startsWith("magazines/") || path.startsWith("articles/") || path.startsWith("booklets/")) {
-    return `http://localhost/aiss-backend/public/storage/${path}`;
-  }
-  return `http://127.0.0.1:8000/storage/${path}`;
-}
-
-// معالجة مسار ملف PDF من Laravel storage
-function fixPdfPath(path) {
-  if (!path) return null;
-  if (path.startsWith("http")) return path;
-  if (path.startsWith("/")) return path;
-  if (path.startsWith("magazines/") || path.startsWith("articles/") || path.startsWith("booklets/")) {
+  if (path.startsWith("articles/")) {
     return `http://localhost/aiss-backend/public/storage/${path}`;
   }
   return `http://127.0.0.1:8000/storage/${path}`;
@@ -124,108 +112,6 @@ export default function ViewArticle() {
           }
 
           setError("لم يتم العثور على الكود المطلوب");
-        }
-
-        // ==========================================
-        // الفعاليات
-        // ==========================================
-        else if (source === "events") {
-          const eventId = parseInt(id);
-
-          const found = events.find((ev) => ev.id === eventId);
-
-          if (found) {
-            setArticle({
-              title: found.title,
-              image: found.image || FALLBACK_IMG,
-              content: found.description || "",
-              source: "events",
-            });
-          } else {
-            setError("لم يتم العثور على الفعالية المطلوبة");
-          }
-        }
-
-        // ==========================================
-        // المجلات - عرض PDF
-        // ==========================================
-        else if (source === "magazine") {
-          const numericId = id ? id.split("-")[0] : null;
-
-          if (!numericId) {
-            setError("معرف المجلة غير موجود");
-            setLoading(false);
-            return;
-          }
-
-          const response = await fetch(
-            `${API_URL}/api/magazines/${numericId}`,
-            {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            }
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            setError(data.message || "لم يتم العثور على المجلة");
-            setLoading(false);
-            return;
-          }
-
-          const item = data.magazine || data;
-
-          setArticle({
-            ...item,
-            title: item.title,
-            image: fixStoragePath(item.cover_image),
-            pdfUrl: fixPdfPath(item.file_path),
-            source: "magazine",
-          });
-        }
-
-        // ==========================================
-        // الكتيبات - عرض PDF
-        // ==========================================
-        else if (source === "booklet") {
-          const numericId = id ? id.split("-")[0] : null;
-
-          if (!numericId) {
-            setError("معرف الكتيب غير موجود");
-            setLoading(false);
-            return;
-          }
-
-          const response = await fetch(
-            `${API_URL}/api/booklets/${numericId}`,
-            {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            }
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            setError(data.message || "لم يتم العثور على الكتيب");
-            setLoading(false);
-            return;
-          }
-
-          const item = data.booklet || data;
-
-          setArticle({
-            ...item,
-            title: item.title,
-            image: fixStoragePath(item.cover_image),
-            pdfUrl: fixPdfPath(item.file_path),
-            source: "booklet",
-          });
         }
 
         // ==========================================
@@ -346,8 +232,6 @@ export default function ViewArticle() {
             to={
               source === "codes"
                 ? "/cods"
-                : source === "events"
-                ? "/event"
                 : "/blogs"
             }
             className="btn1 inline-block mt-5"
@@ -418,39 +302,15 @@ export default function ViewArticle() {
           </div>
         )}
 
-        {/* محتوى المقال - PDF للمجلات والكتيبات */}
-        {article.pdfUrl ? (
-          <div
-            className="max-w-200 mx-auto my-5 p-5 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
-            data-aos="fade-up"
-          >
-            <iframe
-              src={article.pdfUrl}
-              title={article.title}
-              className="w-full rounded-lg"
-              style={{ minHeight: "600px", border: "none" }}
-            />
-            <div className="text-center mt-5">
-              <a
-                href={article.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn1 inline-block bg-primary text-white px-5 py-2.5 text-[14px]"
-              >
-                📥 تحميل PDF
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div
-            className="article-content w-full max-w-350 mx-auto my-5 p-5 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.06)] leading-[1.8] text-[16px] text-right overflow-wrap-break-word wrap-break-word **:overflow-visible **:max-h-none **:min-h-0 [&_img]:max-w-full [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:my-4 [&_img]:rounded-lg [&_img]:object-contain [&_p]:max-w-full [&_div]:max-w-full [&_section]:max-w-full [&_figure]:max-w-full [&_span]:max-w-full [&_a]:max-w-full [&_h1]:max-w-full [&_h2]:max-w-full [&_h3]:max-w-full [&_h4]:max-w-full [&_h5]:max-w-full [&_h6]:max-w-full [&_ul]:max-w-full [&_ol]:max-w-full [&_li]:max-w-full [&_table]:max-w-full [&_tr]:max-w-full [&_td]:max-w-full [&_th]:max-w-full [&_iframe]:max-w-full [&_video]:max-w-full [&_blockquote]:max-w-full [&_h1]:text-primary [&_h2]:text-primary [&_h3]:text-primary [&_h4]:text-primary [&_h5]:text-primary [&_h6]:text-primary [&_h1]:my-6 [&_h2]:my-6 [&_h3]:my-6 [&_h4]:my-6 [&_h5]:my-6 [&_h6]:my-6 [&_a]:text-primary [&_a]:underline [&_ul]:pr-6 [&_ol]:pr-6 [&_ul]:my-3 [&_ol]:my-3 [&_blockquote]:border-r-4 [&_blockquote]:border-accent [&_blockquote]:p-3 [&_blockquote]:my-4 [&_blockquote]:bg-[#f9f9f9] [&_blockquote]:rounded-lg"
-            dangerouslySetInnerHTML={{
-              __html: fixContentImages(
-                article.content || ""
-              ),
-            }}
-          />
-        )}
+        {/* محتوى المقال */}
+        <div
+          className="article-content w-full max-w-350 mx-auto my-5 p-5 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.06)] leading-[1.8] text-[16px] text-right overflow-wrap-break-word wrap-break-word **:overflow-visible **:max-h-none **:min-h-0 [&_img]:max-w-full [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:my-4 [&_img]:rounded-lg [&_img]:object-contain [&_p]:max-w-full [&_div]:max-w-full [&_section]:max-w-full [&_figure]:max-w-full [&_span]:max-w-full [&_a]:max-w-full [&_h1]:max-w-full [&_h2]:max-w-full [&_h3]:max-w-full [&_h4]:max-w-full [&_h5]:max-w-full [&_h6]:max-w-full [&_ul]:max-w-full [&_ol]:max-w-full [&_li]:max-w-full [&_table]:max-w-full [&_tr]:max-w-full [&_td]:max-w-full [&_th]:max-w-full [&_iframe]:max-w-full [&_video]:max-w-full [&_blockquote]:max-w-full [&_h1]:text-primary [&_h2]:text-primary [&_h3]:text-primary [&_h4]:text-primary [&_h5]:text-primary [&_h6]:text-primary [&_h1]:my-6 [&_h2]:my-6 [&_h3]:my-6 [&_h4]:my-6 [&_h5]:my-6 [&_h6]:my-6 [&_a]:text-primary [&_a]:underline [&_ul]:pr-6 [&_ol]:pr-6 [&_ul]:my-3 [&_ol]:my-3 [&_blockquote]:border-r-4 [&_blockquote]:border-accent [&_blockquote]:p-3 [&_blockquote]:my-4 [&_blockquote]:bg-[#f9f9f9] [&_blockquote]:rounded-lg"
+          dangerouslySetInnerHTML={{
+            __html: fixContentImages(
+              article.content || ""
+            ),
+          }}
+        />
 
         {/* زر العودة */}
         <div className="text-center my-7.5">
@@ -458,12 +318,6 @@ export default function ViewArticle() {
             to={
               source === "codes"
                 ? "/cods"
-                : source === "events"
-                ? "/event"
-                : source === "magazine"
-                ? "/magazine"
-                : source === "booklet"
-                ? "/manuals"
                 : "/blogs"
             }
             className="btn1 inline-block px-7.5 py-3"

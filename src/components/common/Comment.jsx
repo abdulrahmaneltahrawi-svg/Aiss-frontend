@@ -14,6 +14,8 @@ export default function Comment({ source = "article", id }) {
     if (source === "booklet") return `booklets/${id}/comments`;
     if (source === "codes") return `code-standards/${id}/comments`;
     if (source === "conference") return `conferences/${id}/comments`;
+    if (source === "events" || source === "competition")
+      return `competitions/${id}/comments`;
     return `articles/${id}/comments`;
   };
 
@@ -150,9 +152,11 @@ export default function Comment({ source = "article", id }) {
       : source === "booklet"
       ? "تعليقات الكتيب"
       : source === "codes"
-      ? "تعليقات الكود"
+      ? "تعليقات الأكواد و المعايير"
       : source === "conference"
       ? "تعليقات المؤتمر"
+      : source === "competition" || source === "events"
+      ? "تعليقات المسابقة"
       : "تعليقات المقال";
 
   return (
@@ -252,7 +256,7 @@ export default function Comment({ source = "article", id }) {
                     {comment.created_at}
                   </span>
                 </div>
-                <p className="text-gray-700 mt-2 leading-relaxed whitespace-pre-wrap break-words">
+                <p className="text-gray-700 mt-2 leading-relaxed whitespace-pre-wrap wrap-break-word">
                   {comment.body}
                 </p>
               </div>

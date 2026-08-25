@@ -12,10 +12,10 @@ import Articles from "./components/pages/articles/articles.jsx";
 import Books from "./components/pages/books/Books.jsx";
 import Code from "./components/pages/articles/Code.jsx";
 import ViewArticle from "./components/pages/articles/ViewArticle.jsx";
-import Conferences from "./components/pages/conferences/Conferences.jsx";
+import Conferences from "./components/pages/events/Conferences.jsx";
 import FlipBook from "./components/pages/books/FlipBook.jsx";
 import Medal from "./components/pages/medal/Medal.jsx";
-import Events from "./components/pages/events/Events.jsx";
+import Events from "./components/pages/events/Competitions.jsx";
 import EventAdd from "./components/pages/events/EventAdd.jsx";
 import Clients from "./components/pages/clients/Partners.jsx";
 import Actors from "./components/pages/clients/Representatives.jsx";
@@ -44,8 +44,10 @@ import Comment from "./components/Admin/Manage_comment.jsx";
 import Add_code from "./components/Admin/Add_code.jsx";
 import Edit_code from "./components/Admin/Edit_code.jsx";
 import Add_conferences from "./components/Admin/Add_conferences.jsx";
+import Add_Competitions from "./components/Admin/Add_Competitions.jsx";
+import Edit_Competitions from "./components/Admin/Edit_Competitions.jsx";
 import Edit_conferences from "./components/Admin/Edit_conferences.jsx";
-import ConferenceDetails from "./components/pages/conferences/ConferenceDetails.jsx";
+import ConferenceDetails from "./components/pages/events/View_Events.jsx";
 
 function App() {
   return (
@@ -68,6 +70,8 @@ function App() {
         <Route path="/conference" element={<Conferences />} />
         <Route path="/conferences" element={<Conferences />} />
         <Route path="/conferences/:id" element={<ConferenceDetails />} />
+        <Route path="/competitions/:id" element={<ConferenceDetails />} />
+        <Route path="/event/:id" element={<ConferenceDetails />} />
         <Route path="/medal" element={<Medal />} />
         <Route path="/event" element={<Events />} />
         <Route path="/event_add" element={<EventAdd />} />
@@ -100,6 +104,8 @@ function App() {
         <Route path="/admin/add-code" element={<Add_code />} />
         <Route path="/admin/edit-code/:id" element={<Edit_code />} />
         <Route path="/admin/add-conferences" element={<Add_conferences />} />
+        <Route path="/admin/add-competitions" element={<Add_Competitions />} />
+        <Route path="/admin/edit-competition/:id" element={<Edit_Competitions />} />
         <Route path="/admin/edit-conference/:id" element={<Edit_conferences />} />
       </Routes>
     </BrowserRouter>

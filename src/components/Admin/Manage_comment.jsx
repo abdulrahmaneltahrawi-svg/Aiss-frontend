@@ -150,6 +150,9 @@ function Comment() {
 
     if (type.includes("article")) {
       navigate(`/views?id=${id}`);
+    } else if (type.includes("competition")) {
+      // تعليق على مسابقة -> صفحة تفاصيل المسابقة
+      navigate(`/competitions/${id}`);
     } else if (type.includes("conference")) {
       // تعليق على مؤتمر -> صفحة تفاصيل المؤتمر (المعرف في المسار)
       navigate(`/conferences/${id}`);
@@ -375,7 +378,7 @@ function Comment() {
         {/* نافذة تفاصيل التعليق (عرض كامل) */}
         {selectedComment && (
           <div
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in-down"
+            className="fixed inset-0 z-100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in-down"
             onClick={(e) => e.target === e.currentTarget && setSelectedComment(null)}
           >
             <div className="bg-white rounded-[18px] shadow-[0_20px_60px_rgba(0,0,0,0.25)] w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">

@@ -163,7 +163,7 @@ function fixMagazineImage(imgPath) {
           </p>
         </div>
 
-        <div className="filter-bar">
+        <div className="filter-bar mt-5">
           <label htmlFor="magazines-sort" className="font-bold text-[15px] whitespace-nowrap">ترتيب المجلات:</label>
           <select
             id="magazines-sort"

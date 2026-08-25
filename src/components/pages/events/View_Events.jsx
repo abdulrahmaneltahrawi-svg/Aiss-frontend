@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
@@ -15,6 +15,9 @@ function fixStoragePath(path) {
   if (path.startsWith("http")) return path;
   if (path.startsWith("/")) return path;
   if (path.startsWith("conferences/")) {
+    return `http://localhost/aiss-backend/public/storage/${path}`;
+  }
+  if (path.startsWith("competitions/")) {
     return `http://localhost/aiss-backend/public/storage/${path}`;
   }
   return `http://127.0.0.1:8000/storage/${path}`;
@@ -42,6 +45,12 @@ function fixContentImages(html) {
 
 export default function ConferenceDetails() {
   const { id } = useParams();
+  const location = useLocation();
+
+  // المسابقات (الأحداث) تُفتح عبر /competitions/:id أو /event/:id
+  const isCompetition =
+    location.pathname.startsWith("/competitions") ||
+    location.pathname.startsWith("/event");
 
   const [conference, setConference] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,37 +71,74 @@ export default function ConferenceDetails() {
 
       try {
         // ==========================================
-        // المؤتمر - Laravel
+        // المسابقة (حدث) - Laravel
+        // المسار: Route::get('/competitions/{competition}', [CompetitionController::class, 'show']);
         // ==========================================
-        const response = await fetch(`${API_URL}/api/conferences/${id}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        });
+        if (isCompetition) {
+          const response = await fetch(
+            `${API_URL}/api/competitions/${id}`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
 
-        const data = await response.json();
+          const data = await response.json();
 
-        if (!response.ok) {
-          setError(data.message || "لم يتم العثور على المؤتمر");
-          setLoading(false);
-          return;
+          if (!response.ok) {
+            setError(data.message || "لم يتم العثور على المسابقة");
+            setLoading(false);
+            return;
+          }
+
+          // Laravel ممكن يرجع المسابقة مباشرة أو داخل competition
+          const item = data.competition || data;
+
+          let image = item.image_url || item.image;
+          image = fixStoragePath(image);
+
+          setConference({
+            ...item,
+            title: item.title || "",
+            image,
+            content: item.description || "",
+          });
+        } else {
+          // ==========================================
+          // المؤتمر - Laravel
+          // ==========================================
+          const response = await fetch(`${API_URL}/api/conferences/${id}`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            setError(data.message || "لم يتم العثور على المؤتمر");
+            setLoading(false);
+            return;
+          }
+
+          // Laravel ممكن يرجع المؤتمر مباشرة أو داخل conference
+          const item = data.conference || data;
+
+          let image = item.image_url || item.image;
+          image = fixStoragePath(image);
+
+          setConference({
+            ...item,
+            title: item.title || "",
+            image,
+            content: item.description || "",
+          });
         }
-
-        // Laravel ممكن يرجع المؤتمر مباشرة أو داخل conference
-        const item = data.conference || data;
-
-        let image = item.image_url || item.image;
-        image = fixStoragePath(image);
-
-        setConference({
-          ...item,
-          title: item.title || "",
-          image,
-          content: item.description || "",
-        });
       } catch (err) {
-        console.error("Error loading conference:", err);
+        console.error("Error loading event:", err);
         setError("حدث خطأ في تحميل المحتوى");
       }
 
@@ -100,7 +146,7 @@ export default function ConferenceDetails() {
     }
 
     loadConference();
-  }, [id]);
+  }, [id, isCompetition]);
 
   // ==========================================
   // Loading
@@ -241,15 +287,20 @@ export default function ConferenceDetails() {
         {/* زر العودة */}
         <div className="text-center my-7.5">
           <Link
-            to="/conference"
+            to={isCompetition ? "/event" : "/conference"}
             className="btn1 inline-block px-7.5 py-3"
           >
-            ← العودة لقائمة المؤتمرات
+            {isCompetition
+              ? "← العودة لقائمة المسابقات"
+              : "← العودة لقائمة المؤتمرات"}
           </Link>
         </div>
 
         {/* التعليقات */}
-        <Comment source="conference" id={id ? id.split("-")[0] : ""} />
+        <Comment
+          source={isCompetition ? "competition" : "conference"}
+          id={id ? id.split("-")[0] : ""}
+        />
       </main>
 
       <Footer />

@@ -7,16 +7,16 @@ import Scroll from "../../common/Scroll.jsx";
 
 
 const countries = [
-  { name: "مصر", top: "41%", left: "61%" },
-  { name: "الأردن", top: "26%", left: "72%" },
-  { name: "فلسطين", top: "22%", left: "68%" },
-  { name: "المغرب", top: "22%", left: "13%" },
+  { name: "مصر", top: "33%", left: "60%" },
+  { name: "الأردن", top: "24%", left: "69%" },
+  { name: "فلسطين", top: "17%", left: "63%" },
+  { name: "المغرب", top: "20%", left: "15%" },
   { name: "تونس", top: "11%", left: "34%" },
-  { name: "لبنان", top: "13%", left: "70%" },
-  { name: "سوريا", top: "8%", left: "74%" },
-  { name: "اليمن", top: "84%", left: "86%" },
-  { name: "عمان", top: "70%", left: "97%" },
-  { name: "البحرين", top: "45%", left: "90%" },
+  { name: "لبنان", top: "11%", left: "67%" },
+  { name: "سوريا", top: "8%", left: "72%" },
+  { name: "اليمن", top: "64%", left: "84%" },
+  { name: "عمان", top: "55%", left: "95%" },
+  { name: "البحرين", top: "40%", left: "85%" },
 ];
 
 export default function Actors() {
@@ -94,7 +94,7 @@ export default function Actors() {
           {countries.map((c) => (
             <span
               key={c.name}
-              className="absolute -translate-x-1/2 -translate-y-1/2 w-15 h-auto transition-transform duration-200 hover:scale-[1.2] cursor-pointer z-10"
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-auto transition-transform duration-200 cursor-pointer z-10"
               style={{ top: c.top, left: c.left }}
               onClick={() => handleCountryClick(c.name)}
             >
@@ -104,7 +104,7 @@ export default function Actors() {
         </div>
 
         <div className="text-center">
-          <button className="block my-5 mx-auto px-6.25 py-2.5 bg-primary text-white border-none rounded-[5px] cursor-pointer font-[Tajawal,sans-serif] text-[16px]" onClick={showAll}>
+          <button className="block my-5 mx-auto px-6.25 py-2.5 bg-primary text-white border-none rounded-[5px] cursor-pointer font-[Tajawal,sans-serif] text-[16px] transition-colors duration-300 hover:bg-primary-dark hover:shadow-lg hover:shadow-[rgba(35,82,135,0.3)]" onClick={showAll}>
             إظهار كافة الممثلين
           </button>
         </div>

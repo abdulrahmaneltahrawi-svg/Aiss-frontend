@@ -85,6 +85,24 @@ function Dashboard() {
               </Link>
             </li>
 
+                        <li>
+              <Link
+                to="/admin/manage-events"
+                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
+              >
+                إدارة الفعاليات
+              </Link>
+            </li>
+
+                        <li>
+              <Link
+                to="/admin/manage-actors"
+                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
+              >
+                إدارة الممثلين
+              </Link>
+            </li>
+
             <li>
               <Link
                 to="/admin/add-article"
@@ -149,23 +167,7 @@ function Dashboard() {
             </li>
 
 
-            <li>
-              <Link
-                to="/admin/manage-actors"
-                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
-              >
-                إدارة الممثلين
-              </Link>
-            </li>
 
-            <li>
-              <Link
-                to="/admin/manage-events"
-                className="block px-4 py-3 rounded-[10px] text-[#444] font-bold no-underline transition-colors duration-300 hover:bg-sidebar-bg hover:text-accent"
-              >
-                إدارة الفعاليات
-              </Link>
-            </li>
 
             <li>
               <Link

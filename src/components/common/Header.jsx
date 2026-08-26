@@ -33,6 +33,26 @@ function Header() {
   const navLinkClass =
     "block no-underline text-[#333] p-[5px] transition-all duration-300 text-[25px] mt-[15px] hover:text-accent hover:-translate-x-[10px] max-[767px]:text-[18px] max-[767px]:mt-[10px] max-[767px]:p-[12px] max-[767px]:hover:translate-x-0";
 
+  // كلاس العناصر الأب (التي لها قائمة فرعية): النص يمين والسهم في أقصى يسار الناف بار
+  const navParentClass =
+    "flex w-full items-center justify-between no-underline text-[#333] p-[5px] transition-all duration-300 text-[25px] mt-[15px] hover:text-accent max-[767px]:text-[18px] max-[767px]:mt-[10px] max-[767px]:p-[12px]";
+
+  // سهم صغير (رأس مثلث فقط) — يتحول للون النص ويدور 180° عند فتح القائمة
+  const NavArrow = ({ open }) => (
+    <svg
+      className={`w-5 h-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+
   const navSubLinkClass =
     "block no-underline text-[18px] mt-[5px] text-[#555] p-[5px] transition-all duration-300 hover:text-accent";
 
@@ -87,7 +107,7 @@ function Header() {
       >
         <ul className="list-none flex flex-col gap-2.5 p-0 m-0 font-bold mr-6.25">
           <li>
-            <Link to="/" className={navLinkClass}>الرئيسية</Link>
+            <Link to="/" className={navLinkClass}>الصفحة الرئيسية</Link>
           </li>
 
           <li>
@@ -98,9 +118,10 @@ function Header() {
                 e.stopPropagation();
                 toggleSubmenu("about");
               }}
-              className={`${navLinkClass} ${openSubmenu === "about" ? "text-accent" : ""}`}
+              className={`${navParentClass} ${openSubmenu === "about" ? "text-accent" : ""}`}
             >
-              عنا ⬐
+              عنّا
+              <NavArrow open={openSubmenu === "about"} />
             </a>
             <ul className={submenuClass(openSubmenu === "about")}>
               <li><Link to="/About_brief" className={navSubLinkClass}>نبذة عن المعهد</Link></li>
@@ -118,6 +139,26 @@ function Header() {
           </li>
 
                     <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSubmenu("blogs");
+              }}
+              className={`${navParentClass} ${openSubmenu === "blogs" ? "text-accent" : ""}`}
+            >
+              المدونات
+              <NavArrow open={openSubmenu === "blogs"} />
+            </a>
+            <ul className={submenuClass(openSubmenu === "blogs")}>
+              <li><Link to="/blogs?cat=محتويات علمية" className={navSubLinkClass}>محتويات علمية</Link></li>
+              <li><Link to="/blogs?cat=مقالات الخبراء" className={navSubLinkClass}>مقالات الخبراء</Link></li>
+              <li><Link to="/blogs?cat=مقالات المجلة" className={navSubLinkClass}>مقالات المجلة</Link></li>
+            </ul>
+          </li>
+
+          <li>
             <Link to="/manuals" className={navLinkClass}>الكتيبات</Link>
           </li>
 
@@ -127,16 +168,16 @@ function Header() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleSubmenu("blogs");
+                toggleSubmenu("events");
               }}
-              className={`${navLinkClass} ${openSubmenu === "blogs" ? "text-accent" : ""}`}
+              className={`${navParentClass} ${openSubmenu === "events" ? "text-accent" : ""}`}
             >
-              المدونات ⬐
+              الفعاليات
+              <NavArrow open={openSubmenu === "events"} />
             </a>
-            <ul className={submenuClass(openSubmenu === "blogs")}>
-              <li><Link to="/blogs?cat=محتويات علمية" className={navSubLinkClass}>محتويات علمية</Link></li>
-              <li><Link to="/blogs?cat=مقالات الخبراء" className={navSubLinkClass}>مقالات الخبراء</Link></li>
-              <li><Link to="/blogs?cat=مقالات المجلة" className={navSubLinkClass}>مقالات المجلة</Link></li>
+            <ul className={submenuClass(openSubmenu === "events")}>
+              <li><Link to="/event?cat=مسابقة" className={navSubLinkClass}>مسابقات السلامة العربية</Link></li>
+              <li><Link to="/event_add" className={navSubLinkClass}>فعاليات شارك فيها المعهد</Link></li>
             </ul>
           </li>
 
@@ -148,23 +189,7 @@ function Header() {
             <Link to="/conferences" className={navLinkClass}>مؤتمرات السلامة</Link>
           </li>
 
-          <li>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleSubmenu("events");
-              }}
-              className={`${navLinkClass} ${openSubmenu === "events" ? "text-accent" : ""}`}
-            >
-              الفعاليات ⬐
-            </a>
-            <ul className={submenuClass(openSubmenu === "events")}>
-              <li><Link to="/event?cat=مسابقة" className={navSubLinkClass}>مسابقات السلامة العربية</Link></li>
-              <li><Link to="/event_add" className={navSubLinkClass}>فعاليات شارك فيها المعهد</Link></li>
-            </ul>
-          </li>
+
 
           <li>
             <Link to="/medal" className={navLinkClass}>وسام السلامة العربي</Link>

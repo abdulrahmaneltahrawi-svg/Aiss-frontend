@@ -106,7 +106,7 @@ function About() {
                             اعتماد للجهات التدريبية المتميزة التي تلتزم بأعلى معايير الجودة.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-cente w-full">
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
                         <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">التمثيل العربي</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يعمل المعهد العربي لعلوم السلامة على توحيد الجهود العربية في مجال

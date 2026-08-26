@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthModals from "./button.jsx";
+import Search from "./Search.jsx";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
-  const [searchOpen, setSearchOpen] = useState(false);
   const headerRef = useRef(null);
-  const searchRef = useRef(null);
 
   // Close menu on desktop < 1024px
   useEffect(() => {
@@ -29,17 +28,6 @@ function Header() {
     };
     document.addEventListener("click", closeOutside);
     return () => document.removeEventListener("click", closeOutside);
-  }, []);
-
-  // Close search when clicking outside
-  useEffect(() => {
-    const closeSearchOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setSearchOpen(false);
-      }
-    };
-    document.addEventListener("click", closeSearchOutside);
-    return () => document.removeEventListener("click", closeSearchOutside);
   }, []);
 
   const navLinkClass =
@@ -87,41 +75,8 @@ function Header() {
           {menuOpen ? "✕" : "☰"}
         </button>
 
-        <div
-          ref={searchRef}
-          className="relative max-[600px]:flex max-[600px]:items-center max-[600px]:order-2"
-        >
-          <div
-            id="search-btn1"
-            className="cursor-pointer max-[600px]:block max-[600px]:w-7.5 max-[600px]:h-10 max-[600px]:p-1.25"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSearchOpen(!searchOpen);
-            }}
-          >
-            <img
-              src="/assets/icons/loupe.webp"
-              alt="search"
-              loading="lazy"
-              className="w-7.25 ml-45 hover:scale-110 hover:transition-transform max-[600px]:w-full max-[600px]:h-auto max-[600px]:ml-0 max-[600px]:filter-none"
-            />
-          </div>
-          <input
-            type="text"
-            id="search-input1"
-            name="search"
-            className={
-              searchOpen
-                ? "block absolute top-[-15%] right-10 w-70 p-[10px_20px] rounded-[25px] border border-[#ddd] shadow-[0_5px_15px_rgba(0,0,0,0.1)] z-100 bg-white mr-r-12.5 max-[600px]:top-full max-[600px]:right-25"
-                : "hidden"
-            }
-            placeholder="ابحث عن ما تريد..."
-          />
-          <ul
-            id="search-suggestions"
-            className="hidden absolute top-[calc(100%+55px)] left-1/2 -translate-x-1/2 w-62.5 bg-white border border-[#ddd] rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.15)] z-98 list-none max-h-75 overflow-y-auto p-0"
-          ></ul>
-        </div>
+        {/* بحث الهيدر — مكوّن منفصل Search.jsx */}
+        <Search />
       </div>
 
       <nav

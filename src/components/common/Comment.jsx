@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Comment({ source = "article", id }) {
+export default function Comment({ source = "article", id, flat = false }) {
   const [comments, setComments] = useState([]);
   const [commentName, setCommentName] = useState("");
   const [commentEmail, setCommentEmail] = useState("");
@@ -160,8 +160,8 @@ export default function Comment({ source = "article", id }) {
       : "تعليقات المقال";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className={flat ? "bg-transparent p-0" : "min-h-screen bg-gray-50 py-10 px-4 sm:px-6"}>
+      <div className={flat ? "max-w-4xl mx-auto px-4" : "max-w-4xl mx-auto"}>
         {/* عنوان القسم */}
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           {sectionTitle}

@@ -234,73 +234,79 @@ export default function ConferenceDetails() {
       </div>
 
       <main className="page-content">
-{/* عنوان المؤتمر */}
-        <div className="section-title-bar">
-          <p>{conference.title}</p>
-        </div>
 
-        {/* صورة المؤتمر */}
-        <div className="max-w-250 mx-auto my-5 px-5">
-          <img
-            src={conference.image || FALLBACK_IMG}
-            alt={conference.title}
-            className="w-full h-auto rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
-            onError={(e) => {
-              e.currentTarget.src = FALLBACK_IMG;
+        {/* حاوية بيضاء موحّدة لكل محتوى المؤتمر */}
+        <div className="max-w-350 mx-auto my-5 bg-white rounded-2xl border border-[#eee] shadow-[0_4px_12px_rgba(0,0,0,0.06)] overflow-hidden">
+
+          {/* عنوان المؤتمر */}
+          <div className="section-title-bar m-0 rounded-none">
+            <p>{conference.title}</p>
+          </div>
+
+          {/* صورة المؤتمر */}
+          <div className="px-5 pt-5">
+            <img
+              src={conference.image || FALLBACK_IMG}
+              alt={conference.title}
+              className="w-full h-auto rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
+              onError={(e) => {
+                e.currentTarget.src = FALLBACK_IMG;
+              }}
+            />
+          </div>
+
+          {/* سنة المؤتمر */}
+          {conference.year && (
+            <div className="px-5 pt-3 flex flex-wrap gap-2 justify-end">
+              <span className="inline-block bg-sidebar-bg text-accent px-4 py-1.5 rounded-full text-sm font-bold">
+                سنة المؤتمر: {conference.year}
+              </span>
+            </div>
+          )}
+
+          {/* وصف المؤتمر */}
+          <div
+            className="article-content w-full p-5 leading-[1.8] text-[16px] text-right overflow-wrap-break-word wrap-break-word **:overflow-visible **:max-h-none **:min-h-0 [&_img]:max-w-full [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:my-4 [&_img]:rounded-lg [&_img]:object-contain [&_p]:max-w-full [&_div]:max-w-full [&_section]:max-w-full [&_figure]:max-w-full [&_span]:max-w-full [&_a]:max-w-full [&_h1]:max-w-full [&_h2]:max-w-full [&_h3]:max-w-full [&_h4]:max-w-full [&_h5]:max-w-full [&_h6]:max-w-full [&_ul]:max-w-full [&_ol]:max-w-full [&_li]:max-w-full [&_table]:max-w-full [&_tr]:max-w-full [&_td]:max-w-full [&_th]:max-w-full [&_iframe]:max-w-full [&_video]:max-w-full [&_blockquote]:max-w-full [&_h1]:text-primary [&_h2]:text-primary [&_h3]:text-primary [&_h4]:text-primary [&_h5]:text-primary [&_h6]:text-primary [&_h1]:my-6 [&_h2]:my-6 [&_h3]:my-6 [&_h4]:my-6 [&_h5]:my-6 [&_h6]:my-6 [&_a]:text-primary [&_a]:underline [&_ul]:pr-6 [&_ol]:pr-6 [&_ul]:my-3 [&_ol]:my-3 [&_blockquote]:border-r-4 [&_blockquote]:border-accent [&_blockquote]:p-3 [&_blockquote]:my-4 [&_blockquote]:bg-[#f9f9f9] [&_blockquote]:rounded-lg"
+            dangerouslySetInnerHTML={{
+              __html: fixContentImages(conference.content || ""),
             }}
           />
-        </div>
 
-        {/* سنة المؤتمر */}
-        {conference.year && (
-          <div className="max-w-350 mx-auto my-5 px-5 text-center">
-            <span className="inline-block bg-sidebar-bg text-accent px-4 py-1.5 rounded-full text-sm font-bold">
-              سنة المؤتمر: {conference.year}
-            </span>
-          </div>
-        )}
+          {/* رابط فيديو المؤتمر */}
+          {conference.video_url && (
+            <div className="text-center mt-2 px-5">
+              <a
+                href={conference.video_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-sm font-bold no-underline hover:bg-primary-dark transition-colors shadow-[0_4px_12px_rgba(35,82,135,0.3)]"
+              >
+                <span className="text-base">🎥</span>
+                مشاهدة فيديو المؤتمر
+              </a>
+            </div>
+          )}
 
-
-        {/* وصف المؤتمر */}
-        <div
-          className="article-content w-full max-w-350 mx-auto my-5 p-5 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.06)] leading-[1.8] text-[16px] text-right overflow-wrap-break-word wrap-break-word **:overflow-visible **:max-h-none **:min-h-0 [&_img]:max-w-full [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:my-4 [&_img]:rounded-lg [&_img]:object-contain [&_p]:max-w-full [&_div]:max-w-full [&_section]:max-w-full [&_figure]:max-w-full [&_span]:max-w-full [&_a]:max-w-full [&_h1]:max-w-full [&_h2]:max-w-full [&_h3]:max-w-full [&_h4]:max-w-full [&_h5]:max-w-full [&_h6]:max-w-full [&_ul]:max-w-full [&_ol]:max-w-full [&_li]:max-w-full [&_table]:max-w-full [&_tr]:max-w-full [&_td]:max-w-full [&_th]:max-w-full [&_iframe]:max-w-full [&_video]:max-w-full [&_blockquote]:max-w-full [&_h1]:text-primary [&_h2]:text-primary [&_h3]:text-primary [&_h4]:text-primary [&_h5]:text-primary [&_h6]:text-primary [&_h1]:my-6 [&_h2]:my-6 [&_h3]:my-6 [&_h4]:my-6 [&_h5]:my-6 [&_h6]:my-6 [&_a]:text-primary [&_a]:underline [&_ul]:pr-6 [&_ol]:pr-6 [&_ul]:my-3 [&_ol]:my-3 [&_blockquote]:border-r-4 [&_blockquote]:border-accent [&_blockquote]:p-3 [&_blockquote]:my-4 [&_blockquote]:bg-[#f9f9f9] [&_blockquote]:rounded-lg"
-          dangerouslySetInnerHTML={{
-            __html: fixContentImages(conference.content || ""),
-          }}
-        />
-
-                {/* رابط فيديو المؤتمر */}
-        {conference.video_url && (
-          <div className="max-w-350 mx-auto my-5 px-5 text-center">
-            <a
-              href={conference.video_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-sm font-bold no-underline hover:bg-primary-dark transition-colors shadow-[0_4px_12px_rgba(35,82,135,0.3)]"
+          {/* زر العودة */}
+          <div className="text-center mt-2 mb-5 px-5">
+            <Link
+              to={isCompetition ? "/event" : "/conference"}
+              className="btn1 inline-block px-7.5 py-3"
             >
-              <span className="text-base">🎥</span>
-              مشاهدة فيديو المؤتمر
-            </a>
+              {isCompetition
+                ? "← العودة لقائمة المسابقات"
+                : "← العودة لقائمة المؤتمرات"}
+            </Link>
           </div>
-        )}
 
-        {/* زر العودة */}
-        <div className="text-center my-7.5">
-          <Link
-            to={isCompetition ? "/event" : "/conference"}
-            className="btn1 inline-block px-7.5 py-3"
-          >
-            {isCompetition
-              ? "← العودة لقائمة المسابقات"
-              : "← العودة لقائمة المؤتمرات"}
-          </Link>
+          {/* التعليقات */}
+          <div className="border-t border-[#f1f1f1]">
+            <Comment
+              source={isCompetition ? "competition" : "conference"}
+              id={id ? id.split("-")[0] : ""}
+            />
+          </div>
         </div>
-
-        {/* التعليقات */}
-        <Comment
-          source={isCompetition ? "competition" : "conference"}
-          id={id ? id.split("-")[0] : ""}
-        />
       </main>
 
       <Footer />

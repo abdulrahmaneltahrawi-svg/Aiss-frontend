@@ -1,7 +1,14 @@
+import { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Header from "../common/Header.jsx";
 import Footer from "../common/Footer.jsx";
 
 function About() {
+    useEffect(() => {
+        AOS.init({ duration: 1000, once: true });
+    }, []);
+
     return (
         <>
             <Header />
@@ -10,13 +17,13 @@ function About() {
             <div className="relative w-full h-100 flex justify-center items-center overflow-hidden mt-21.25 max-[600px]:mt-12.5 max-[600px]:h-50">
                 <img src="assets/imge/banar.jpg" alt="hero-logo4" loading="lazy" className="absolute top-0 left-0 w-full h-full object-cover z-[-1]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent font-bold text-[70px] text-center w-[95%] max-[600px]:text-[28px]">
-                    <p className="text-accent text-[5rem] drop-shadow-[2px_3px_9px_rgba(0,0,0,0.6)] max-[600px]:text-[2.5rem] max-[600px]:m-0">المعهد العربي لعلوم السلامة</p>
+                    <p className="text-accent text-[5rem] drop-shadow-[2px_3px_9px_rgba(0,0,0,0.6)] max-[600px]:text-[2.5rem] max-[600px]:m-0" data-aos="fade-down" data-aos-duration="1200">المعهد العربي لعلوم السلامة</p>
                 </div>
             </div>
 
             <div className="flex items-center gap-12.5 p-[80px_5%] flex-wrap justify-center max-[992px]:p-[40px_20px] max-[992px]:text-center max-[992px]:flex-col max-[992px]:gap-7.5">
-                <img src="assets/imge/aboutUs.png" alt="aboutUs-image" className="flex-1 min-w-75 max-w-112.5 rounded-[25px] max-[992px]:min-w-0 max-[992px]:w-full max-[992px]:max-w-75 max-[992px]:m-0 auto" />
-                <div className="flex-1 min-w-75 max-[992px]:min-w-0">
+                <img src="assets/imge/aboutUs.png" alt="aboutUs-image" data-aos="fade-right" data-aos-delay="150" className="flex-1 min-w-75 max-w-112.5 rounded-[25px] max-[992px]:min-w-0 max-[992px]:w-full max-[992px]:max-w-75 max-[992px]:m-0 auto" />
+                <div className="flex-1 min-w-75 max-[992px]:min-w-0" data-aos="fade-left" data-aos-delay="300">
                     <span className="text-[#7a7a7a] text-[15px] block mb-3.75">مرحبا بك في</span>
                     <h1 className="text-[2rem] text-accent mb-6.25 font-black leading-[1.2] max-[992px]:text-[1.6rem] max-[992px]:mb-3.75">المعهد العربي لعلوم السلامة</h1>
                     <p className="leading-loose text-[#555] text-[1rem] text-justify max-[992px]:text-right max-[992px]:text-[0.95rem]">
@@ -44,8 +51,8 @@ function About() {
 
             <section className="services">
                 <div className="flex gap-7.5 p-[40px_0] text-[whitesmoke] m-2.5 flex-wrap">
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">الريادة في تعريب أكواد السلامة</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="0">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">الريادة في تعريب أكواد السلامة</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يتميَّز المعهد العربي لعلوم السلامة بكونه أوَّل جهة متخصِّصة في
                             العالم العربي في تعريب أكواد ومعايير السلامة العالمية، ما يجعله
@@ -53,8 +60,8 @@ function About() {
                             المعايير الدولية باللغة العربية.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">مجلة السلامة العربية</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="100">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">مجلة السلامة العربية</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             في إطار جهوده التوعوية، يقوم المعهد بإصدار مجلة "السلامة العربية"
                             بشكل شهري، وهي أول مجلة عربية متخصصة في مجال السلامة، تهدف إلى تسليط
@@ -62,16 +69,16 @@ function About() {
                             ما يجعلها مصدرًا علميًا موثوقًا للمهتمين بهذا المجال.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">اعتماد وتأهيل المدربين والاستشاريين</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="200">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">اعتماد وتأهيل المدربين والاستشاريين</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يقدِّم المعهد العربي لعلوم السلامة برامج متكاملة لتأهيل واعتماد
                             المدربين والاستشاريين المتخصصين في علوم السلامة، حيث يعمل على إعداد
                             كوادر عربية مؤهلة قادرة على نقل المعرفة بأسلوب علمي متطور.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">مسابقة السلامة العربية</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="300">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">مسابقة السلامة العربية</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             ينظم المعهد سنويًّا "مسابقة السلامة العربية"، وهي أوَّل مسابقة علمية
                             عربية تُعنى بتشجيع المبتكرين والمخترعين في مجال علوم السلامة. تهدف
@@ -79,8 +86,8 @@ function About() {
                             تعزيز بيئات العمل الآمنة.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">البرامج والدورات العلمية</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="400">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">البرامج والدورات العلمية</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يعتمد المعهد العربي لعلوم السلامة مجموعة واسعة من البرامج والدورات
                             العلمية المتخصصة التي تستهدف مختلف القطاعات، بهدف تزويد المتدربين
@@ -88,8 +95,8 @@ function About() {
                             المعايير والتقنيات الحديثة.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">المؤتمرات العربية لعلوم السلامة</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="500">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">المؤتمرات العربية لعلوم السلامة</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             نظَّم المعهد العربي لعلوم السلامة بنجاحٍ سلسلةً من المؤتمرات العلمية
                             المتميزة تحت عنوان "مؤتمر السلامة العربية" (الأول، الثاني، الثالث،
@@ -98,16 +105,16 @@ function About() {
                             المعرفة وتوحيد الجهود في سبيل تعزيز ثقافة السلامة.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">شهادات الاعتماد للمحترفين والجهات التدريبية</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="600">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">شهادات الاعتماد للمحترفين والجهات التدريبية</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يدرك المعهد أهمية رفع كفاءة العاملين في مجالات السلامة، لذا يمنح
                             شهادات اعتماد معترف بها للمُدرِّبين المحترفين، كما يقدِّم شهادات
                             اعتماد للجهات التدريبية المتميزة التي تلتزم بأعلى معايير الجودة.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">التمثيل العربي</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="700">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">التمثيل العربي</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يعمل المعهد العربي لعلوم السلامة على توحيد الجهود العربية في مجال
                             السلامة، عبر فريقٍ من المُمثِّلين في عدَّة دول عربية. يهدف هؤلاء
@@ -115,8 +122,8 @@ function About() {
                             الخبرات والمعارف لتعزيز مستويات الأمان والسلامة في الوطن العربي.
                         </p>
                     </div>
-                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full">
-                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem]">شبكة الخبراء والمتخصصين</h3>
+                    <div className="bg-white p-5 rounded-lg border-t-4 border-t-[#d32f2f] text-center w-full" data-aos="fade-up" data-aos-delay="800">
+                        <h3 className="text-[#e4293aed] mb-2.5 text-[1.4rem] font-bold">شبكة الخبراء والمتخصصين</h3>
                         <p className="text-[#1c4f83] mb-2.5">
                             يمتلك المعهد شبكةً من الخبراء والمتخصصين في مجال السلامة، الذين
                             يُقدمون الدعم والاستشارات والإجابة على استفسارات الجمهور عبر مختلف

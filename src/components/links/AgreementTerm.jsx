@@ -54,56 +54,83 @@ function AgreementTerm() {
                     <p className="text-[#333] leading-[1.9] text-[15px]">للاستفسارات: <a href="mailto:aiss@aiss.co">aiss@aiss.co</a></p>
                 </div>
             </main>
-            <hr />
-            <section className="flex justify-between items-center p-7.5 gap-3.75 leading-6 bg-white rounded-b-[35px] shadow-[0_10px_30px_rgba(0,0,0,0.08)] [direction:ltr] font-[Tajawal,sans-serif] text-[#161616]">
-                <div>
-                    <p>
-                        <strong>"ARAB INSTITUTE FOR SAFETY SCIENCES FZCO"</strong> maintains
-                        the <a href="https://aiss.co" className="text-[#00214f] hover:text-black">https://aiss.co</a> Website ("Site").
-                    </p>
-                    <p>
-                        "The United Arab Emirates is our country of domicile" stipulates that
-                        the governing law is the local law. All disputes arising in connection
-                        in addition to that shall be heard only by a court of competent
-                        jurisdiction in the U.A.E.
-                    </p>
-                    <p>
-                        "Visa or MasterCard debit and credit cards in <strong>AED</strong> will be accepted for payment"
-                    </p>
-                    <p>
-                        "We will not trade with or provide any services to OFAC (Office of
-                        Foreign Assets Control) and sanctioned countries in accordance with
-                        the law of UAE"
-                    </p>
-                    <p>
-                        "Customers using the website who are Minor /under <strong>the age of 18</strong> shall not register as a User of the
-                        website and shall not transact on or use the website"
-                    </p>
-                    <p>
-                        "Cardholder must retain a copy of transaction records and Merchant policies and rules"
-                    </p>
-                    <p>
-                        "User is responsible for maintaining the confidentiality of his account"
-                    </p>
-                </div>
-                <hr />
-                <div>
-                    <h4>PAYMENT CONFIRMATION</h4>
-                    <p>
-                        Once the payment is made, the confirmation notice will be sent to the
-                        client via email within 24 hours of receipt of payment.
-                    </p>
-                    <h4>CANCELLATION POLICY</h4>
-                    <p>
-                        Customers can cancel their order/requested service within 24 hours;
-                        refunds will be made back to the payment solution used initially by
-                        the customer.
-                    </p>
-                    <h4>REFUND POLICY</h4>
-                    <p>
-                        "Refunds will be done only through the Original Mode of Payment.
-                        Please allow for up to 45 days for the refund transfer to be completed.
-                    </p>
+            <section className="w-[min(1100px,92%)] m-[0_auto_60px]">
+                <div className="bg-white rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] overflow-hidden [direction:ltr] font-[Tajawal,sans-serif] text-[#161616]">
+                    <div className="bg-[#00214f] px-8 py-4 flex items-center justify-between flex-wrap gap-3">
+                        <h3 className="text-white m-0 text-xl font-bold tracking-wide">Legal Notices &amp; Policies</h3>
+                        <span className="inline-flex items-center gap-2 rounded-full bg-white/15 text-white text-[11px] px-3 py-1 tracking-wide">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                            Effective 2023
+                        </span>
+                    </div>
+
+                    <div className="p-8 max-[600px]:p-5">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-4">
+                            <div className="space-y-4">
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    <strong className="text-[#00214f]">"ARAB INSTITUTE FOR SAFETY SCIENCES FZCO"</strong> maintains
+                                    the <a href="https://aiss.co" className="text-[#00214f] hover:text-[#00214f]/60 hover:underline font-medium">https://aiss.co</a> Website ("Site").
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "The United Arab Emirates is our country of domicile" stipulates that
+                                    the governing law is the local law. All disputes arising in connection
+                                    in addition to that shall be heard only by a court of competent
+                                    jurisdiction in the U.A.E.
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "Visa or MasterCard debit and credit cards in <strong className="text-[#00214f]">AED</strong> will be accepted for payment"
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "We will not trade with or provide any services to OFAC (Office of
+                                    Foreign Assets Control) and sanctioned countries in accordance with
+                                    the law of UAE"
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "Customers using the website who are Minor /under <strong className="text-[#00214f]">the age of 18</strong> shall not register as a User of the
+                                    website and shall not transact on or use the website"
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "Cardholder must retain a copy of transaction records and Merchant policies and rules"
+                                </p>
+                                <p className="leading-[1.9] text-[15px] text-[#333]">
+                                    "User is responsible for maintaining the confidentiality of his account"
+                                </p>
+                            </div>
+                            <div className="space-y-5">
+                                <div className="rounded-2xl border border-[#00214f]/15 bg-[#f5f8fc] p-5 transition-shadow hover:shadow-[0_6px_18px_rgba(0,33,79,0.08)]">
+                                    <h4 className="m-0 mb-2 text-[#00214f] text-[17px] font-bold">
+                                        
+                                        PAYMENT CONFIRMATION
+                                    </h4>
+                                    <p className="m-0 leading-[1.8] text-[14px] text-[#444]">
+                                        Once the payment is made, the confirmation notice will be sent to the
+                                        client via email within 24 hours of receipt of payment.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-[#00214f]/15 bg-[#f5f8fc] p-5 transition-shadow hover:shadow-[0_6px_18px_rgba(0,33,79,0.08)]">
+                                    <h4 className="m-0 mb-2 text-[#00214f] text-[17px] font-bold">
+                                        CANCELLATION POLICY
+                                    </h4>
+                                    <p className="m-0 leading-[1.8] text-[14px] text-[#444]">
+                                        Customers can cancel their order/requested service within 24 hours;
+                                        refunds will be made back to the payment solution used initially by
+                                        the customer.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-[#00214f]/15 bg-[#f5f8fc] p-5 transition-shadow hover:shadow-[0_6px_18px_rgba(0,33,79,0.08)]">
+                                    <h4 className="m-0 mb-2 text-[#00214f] text-[17px] font-bold">
+                                        REFUND POLICY
+                                    </h4>
+                                    <p className="m-0 leading-[1.8] text-[14px] text-[#444]">
+                                        "Refunds will be done only through the Original Mode of Payment.
+                                        Please allow for up to 45 days for the refund transfer to be completed.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             <Footer />

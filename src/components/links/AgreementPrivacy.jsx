@@ -52,14 +52,40 @@ function AgreementPrivacy() {
                     <p className="text-[#333] leading-[1.9] text-[15px]">نشكركم على ثقتكم بنا واستخدامكم لموقع المعهد العربي لعلوم السلامة.</p>
                 </div>
             </main>
-            <hr />
-            <section>
-                <div className="bg-white rounded-b-[35px] shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-7.5 [direction:ltr] font-[Tajawal,sans-serif] leading-[1.6rem]">
-                    <p>{'>'} "All credit/debit cards details and personally identifiable information will NOT be stored, sold, shared, rented or leased to any third parties"</p>
-                    <p>{'>'} <a href="https://aiss.co">https://aiss.co</a> will not pass any debit/credit card details to third parties</p>
-                    <p>{'>'} <a href="https://aiss.co">https://aiss.co</a> takes appropriate steps to ensure data privacy and security including through various hardware and software methodologies. However, (https://aiss.co/) cannot guarantee the security of any information that is disclosed online</p>
-                    <p>{'>'} The <a href="https://aiss.co">https://aiss.co</a> is not responsible for the privacy policies of websites to which it links. If you provide any information to such third parties different rules regarding the collection and use of your personal information may apply. You should contact these entities directly if you have any questions about their use of the information that they collect.</p>
-                    <p>{'>'} The Website Policies and Terms & Conditions may be changed or updated occasionally to meet the requirements and standards. Therefore, the Customers are encouraged to frequently visit these sections to be updated about the changes on the website. Modifications will be effective on the day they are posted.</p>
+            <section className="w-[min(1100px,92%)] m-[0_auto_60px]">
+                <div className="bg-white rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] overflow-hidden [direction:ltr] font-[Tajawal,sans-serif] text-[#161616]">
+                    <div className="bg-[#00214f] px-8 py-4 flex items-center justify-between flex-wrap gap-3">
+                        <h3 className="text-white m-0 text-xl font-bold tracking-wide">Data Privacy &amp; Security</h3>
+                        <span className="inline-flex items-center gap-2 rounded-full bg-white/15 text-white text-[11px] px-3 py-1 tracking-wide">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                            Secured
+                        </span>
+                    </div>
+
+                    <div className="p-8 max-[600px]:p-5">
+                        <ul className="space-y-4 m-0 p-0 list-none">
+                            <li className="flex items-start gap-3.5">
+                                <span className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[#eaf0fa] text-[#00214f] flex items-center justify-center text-[13px] font-bold">01</span>
+                                <p className="m-0 leading-[1.9] text-[15px] text-[#333]">"All credit/debit cards details and personally identifiable information will NOT be stored, sold, shared, rented or leased to any third parties"</p>
+                            </li>
+                            <li className="flex items-start gap-3.5">
+                                <span className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[#eaf0fa] text-[#00214f] flex items-center justify-center text-[13px] font-bold">02</span>
+                                <p className="m-0 leading-[1.9] text-[15px] text-[#333]"><a href="https://aiss.co" className="text-[#00214f] hover:text-[#00214f]/60 hover:underline font-medium">https://aiss.co</a> will not pass any debit/credit card details to third parties</p>
+                            </li>
+                            <li className="flex items-start gap-3.5">
+                                <span className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[#eaf0fa] text-[#00214f] flex items-center justify-center text-[13px] font-bold">03</span>
+                                <p className="m-0 leading-[1.9] text-[15px] text-[#333]"><a href="https://aiss.co" className="text-[#00214f] hover:text-[#00214f]/60 hover:underline font-medium">https://aiss.co</a> takes appropriate steps to ensure data privacy and security including through various hardware and software methodologies. However, (https://aiss.co/) cannot guarantee the security of any information that is disclosed online</p>
+                            </li>
+                            <li className="flex items-start gap-3.5">
+                                <span className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[#eaf0fa] text-[#00214f] flex items-center justify-center text-[13px] font-bold">04</span>
+                                <p className="m-0 leading-[1.9] text-[15px] text-[#333]">The <a href="https://aiss.co" className="text-[#00214f] hover:text-[#00214f]/60 hover:underline font-medium">https://aiss.co</a> is not responsible for the privacy policies of websites to which it links. If you provide any information to such third parties different rules regarding the collection and use of your personal information may apply. You should contact these entities directly if you have any questions about their use of the information that they collect.</p>
+                            </li>
+                            <li className="flex items-start gap-3.5">
+                                <span className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[#eaf0fa] text-[#00214f] flex items-center justify-center text-[13px] font-bold">05</span>
+                                <p className="m-0 leading-[1.9] text-[15px] text-[#333]">The Website Policies and Terms &amp; Conditions may be changed or updated occasionally to meet the requirements and standards. Therefore, the Customers are encouraged to frequently visit these sections to be updated about the changes on the website. Modifications will be effective on the day they are posted.</p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </section>
             <Footer />

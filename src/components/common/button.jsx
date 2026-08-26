@@ -495,7 +495,7 @@ function AuthModals() {
           المستخدم
       ========================= */}
       {user ? (
-        <div className="flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-default max-[600px]:w-auto max-[600px]:min-w-25 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:whitespace-nowrap max-[600px]:mb-2.5 max-[600px]:ml-2.5">
+        <div className="flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-default max-[600px]:w-auto max-[600px]:min-w-0 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:whitespace-nowrap max-[600px]:ml-2.5 max-[600px]:shrink">
 
           <img
             src="/assets/icons/login.webp"
@@ -528,7 +528,7 @@ function AuthModals() {
         <button
           type="button"
           onClick={() => setCurrentModel("login")}
-          className="flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-pointer hover:shadow-[0_0_5px] max-[600px]:w-auto max-[600px]:min-w-25 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:whitespace-nowrap max-[600px]:mb-2.5 max-[600px]:ml-2.5"
+          className="flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-pointer hover:shadow-[0_0_5px] max-[600px]:w-auto max-[600px]:min-w-0 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:whitespace-nowrap max-[600px]:ml-2.5 max-[600px]:shrink"
         >
           <img
             src="/assets/icons/login.webp"

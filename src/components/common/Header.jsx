@@ -66,23 +66,23 @@ function Header() {
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 right-0 left-0 w-full flex flex-row-reverse justify-around items-center bg-white z-9999"
+      className="fixed top-0 right-0 left-0 w-full flex flex-row-reverse justify-around items-center bg-white z-9999 max-[600px]:justify-between max-[600px]:flex-nowrap max-[600px]:gap-2 max-[600px]:px-2 max-[600px]:overflow-hidden"
     >
       <Link to="/">
         <img
           src="/assets/imge/logo-iss-site.jpg.jpeg"
           alt="logo"
           loading="lazy"
-          className="w-70 max-[600px]:w-32.5"
+          className="w-70 max-[600px]:w-28 max-[400px]:w-24 shrink-0"
         />
       </Link>
 
       {/* AuthModals يتحكم بالكامل في زر تسجيل الدخول / معلومات المستخدم */}
       <AuthModals />
 
-      <div className="flex items-center gap-7.5">
+      <div className="flex items-center gap-7.5 max-[600px]:gap-0">
         <button
-          className="bg-transparent border border-black/15 rounded-xl px-3 py-2 text-[28px] leading-none cursor-pointer max-[600px]:order-1 max-[600px]:block max-[600px]:text-[24px] max-[600px]:bg-none max-[600px]:border-none max-[600px]:p-2.5 max-[600px]:text-[#333] max-[600px]:mb-2.5"
+          className="bg-transparent border border-black/15 rounded-xl px-3 py-2 text-[28px] leading-none cursor-pointer max-[600px]:order-1 max-[600px]:block max-[600px]:text-[24px] max-[600px]:bg-none max-[600px]:border-none max-[600px]:p-2.5 max-[600px]:text-[#333] max-[600px]:shrink-0"
           id="menu-toggle"
           aria-label="فتح القائمة"
           aria-expanded={menuOpen}

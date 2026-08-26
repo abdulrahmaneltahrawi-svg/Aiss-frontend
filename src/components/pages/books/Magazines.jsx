@@ -7,7 +7,7 @@ import Footer from "../../common/Footer.jsx";
 import Scroll from "../../common/Scroll.jsx";
 import Card from "../../common/Card.jsx";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "";
 
 function getXsrfToken() {
   const cookie = document.cookie

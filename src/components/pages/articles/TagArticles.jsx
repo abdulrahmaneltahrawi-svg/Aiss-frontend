@@ -48,12 +48,12 @@ export default function TagArticles() {
   useEffect(() => {
     let cancelled = false;
 
-    setLoading(true);
-    setError(null);
-    setArticles([]);
-    setTagName(tagNameFromUrl);
-
     async function loadTagArticles() {
+      setLoading(true);
+      setError(null);
+      setArticles([]);
+      setTagName(tagNameFromUrl);
+
       if (!tagId) {
         setError("معرف الوسم غير موجود");
         setLoading(false);

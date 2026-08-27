@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const API = "";
@@ -14,6 +14,19 @@ function getXsrfToken() {
 function AuthModals() {
   const [user, setUser] = useState(null);
   const [currentModel, setCurrentModel] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
+  // إغلاق قائمة المستخدم عند الضغط خارجها
+  useEffect(() => {
+    const closeOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", closeOutside);
+    return () => document.removeEventListener("click", closeOutside);
+  }, []);
 
   // =========================
   // فحص تسجيل الدخول
@@ -176,9 +189,7 @@ function AuthModals() {
   // =========================
   // تسجيل الخروج
   // =========================
-  const handleLogout = async (e) => {
-    e.preventDefault();
-
+  const handleLogout = async () => {
     try {
       // الحصول على CSRF Token
       await fetch(`${API}/sanctum/csrf-cookie`, {
@@ -197,17 +208,10 @@ function AuthModals() {
         },
       });
 
-      if (response.ok) {
-        setUser(null);
-        setCurrentModel(null);
+      setUser(null);
+      setCurrentModel(null);
 
-        window.dispatchEvent(new Event("auth-change"));
-      } else {
-        console.error(
-          "Logout failed:",
-          response.status
-        );
-      }
+      window.dispatchEvent(new Event("auth-change"));
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -238,40 +242,102 @@ function AuthModals() {
       return;
     }
 
-    const formData = new FormData();
-
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("password", password);
-
     try {
-      const res = await fetch("/api/user_register.php", {
+      // 1. الحصول على CSRF Cookie (نفس نمط تسجيل الدخول)
+      const csrfResponse = await fetch(
+        `${API}/sanctum/csrf-cookie`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!csrfResponse.ok) {
+        throw new Error("فشل الحصول على CSRF Cookie");
+      }
+
+      // 2. قراءة CSRF Token
+      const csrfToken = getXsrfToken();
+
+      if (!csrfToken) {
+        throw new Error("لم يتم العثور على XSRF-TOKEN");
+      }
+
+      // 3. إنشاء الحساب
+      const registerResponse = await fetch(`${API}/register`, {
         method: "POST",
-        body: formData,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-XSRF-TOKEN": csrfToken,
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          password,
+          password_confirmation: password,
+        }),
       });
 
-      const data = await res.json();
+      let registerData = {};
 
-      if (data.success) {
-        if (messageEl) {
-          messageEl.textContent = data.message;
-          messageEl.style.color = "green";
-        }
+      try {
+        registerData = await registerResponse.json();
+      } catch {
+        registerData = {};
+      }
 
-        setTimeout(() => {
-          setCurrentModel("login");
-        }, 1500);
-      } else {
+      if (!registerResponse.ok) {
         if (messageEl) {
-          messageEl.textContent = data.message;
+          const msg =
+            registerData.message ||
+            (registerData.errors
+              ? Object.values(registerData.errors).flat().join("، ")
+              : "") ||
+            "حدث خطأ أثناء إنشاء الحساب";
+
+          messageEl.textContent = msg;
           messageEl.style.color = "red";
         }
+
+        return;
       }
-    } catch (error) {
+
+      // 4. نجح إنشاء الحساب → أنت مسجّل دخول الآن
       if (messageEl) {
         messageEl.textContent =
-          "حدث خطأ في الاتصال بالخادم";
+          registerData.message || "تم إنشاء الحساب بنجاح!";
+        messageEl.style.color = "green";
+      }
+
+      // 5. جلب بيانات المستخدم
+      const meResponse = await fetch(`${API}/api/me`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (meResponse.ok) {
+        const meData = await meResponse.json();
+        setUser(meData.user || meData);
+      }
+
+      // 6. إغلاق نافذة التسجيل
+      setCurrentModel(null);
+
+      // 7. إعلام باقي الموقع
+      window.dispatchEvent(new Event("auth-change"));
+    } catch (error) {
+      console.error("Signup error:", error);
+
+      if (messageEl) {
+        messageEl.textContent =
+          error.message || "حدث خطأ في الاتصال بالخادم";
+
         messageEl.style.color = "red";
       }
     }
@@ -495,8 +561,11 @@ function AuthModals() {
           المستخدم
       ========================= */}
       {user ? (
-        <div className="flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-default max-[600px]:w-auto max-[600px]:min-w-0 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:whitespace-nowrap max-[600px]:ml-2.5 max-[600px]:shrink">
-
+        <div
+          ref={userMenuRef}
+          className="relative flex items-center gap-2 p-[10px_20px] text-[13px] font-bold border border-[rgba(114,113,113,0.049)] rounded-[5px] bg-[rgb(245,245,245)] text-[#111] cursor-default max-[600px]:w-auto max-[600px]:min-w-0 max-[600px]:text-[11px] max-[600px]:text-black max-[600px]:p-[6px_8px] max-[600px]:m-0 max-[600px]:ml-2.5 max-[600px]:shrink max-[600px]:cursor-pointer"
+          onClick={() => setUserMenuOpen(!userMenuOpen)}
+        >
           <img
             src="/assets/icons/login.webp"
             alt="user"
@@ -504,25 +573,60 @@ function AuthModals() {
             className="w-3.75 h-auto opacity-70"
           />
 
-          <span className="text-[14px] font-bold text-primary">
+          <span className="text-[14px] font-bold text-primary max-w-40 truncate max-[600px]:text-[11px] max-[600px]:max-w-16">
             {user.name}
           </span>
 
-          {user.can_add_article == 1 && (
-            <Link
-              to="/admin"
-              className="bg-primary text-white no-underline rounded-[5px] p-[5px_10px] cursor-pointer text-[12px]"
-            >
-              لوحة التحكم
-            </Link>
-          )}
+          {/* الأزرار: تظهر كاملة على الشاشات الكبيرة فقط */}
+          <div className="hidden md:flex items-center gap-2">
+            {user.role === "admin" || user.can_add_article == 1 ? (
+              <Link
+                to="/admin"
+                onClick={(e) => e.stopPropagation()}
+                className="bg-primary text-white no-underline rounded-[5px] p-[5px_10px] cursor-pointer text-[12px]"
+              >
+                لوحة التحكم
+              </Link>
+            ) : null}
 
-          <button
-            onClick={handleLogout}
-            className="bg-accent text-white border-none rounded-[5px] p-[5px_10px] cursor-pointer text-[12px]"
-          >
-            تسجيل الخروج
-          </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLogout();
+              }}
+              className="bg-accent text-white border-none rounded-[5px] p-[5px_10px] cursor-pointer text-[12px]"
+            >
+              تسجيل الخروج
+            </button>
+          </div>
+
+          {/* سهم لكشف القائمة على الجوال */}
+          <span className="md:hidden text-[9px] text-[#888] leading-none">▼</span>
+
+          {/* القائمة المنسدلة على الجوال */}
+          {userMenuOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 mt-1 min-w-40 bg-white border border-[#ddd] rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.15)] z-10060 p-2 flex flex-col gap-1.5">
+              {user.role === "admin" || user.can_add_article == 1 ? (
+                <Link
+                  to="/admin"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="bg-primary text-white no-underline rounded-[5px] w-full px-4 py-2 cursor-pointer text-[13px] block text-center"
+                >
+                  لوحة التحكم
+                </Link>
+              ) : null}
+
+              <button
+                onClick={() => {
+                  setUserMenuOpen(false);
+                  handleLogout();
+                }}
+                className="bg-accent text-white w-full border-none rounded-[5px] px-4 py-2 cursor-pointer text-[13px]"
+              >
+                تسجيل الخروج
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <button

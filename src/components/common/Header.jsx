@@ -66,7 +66,7 @@ function Header() {
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 right-0 left-0 w-full flex flex-row-reverse justify-around items-center bg-white z-9999 max-[600px]:justify-between max-[600px]:flex-nowrap max-[600px]:gap-2 max-[600px]:px-2 max-[600px]:overflow-hidden"
+      className="fixed top-0 right-0 left-0 w-full flex flex-row-reverse justify-around items-center bg-white z-9999 max-[600px]:justify-between max-[600px]:flex-nowrap max-[600px]:gap-2 max-[600px]:px-2"
     >
       <Link to="/">
         <img

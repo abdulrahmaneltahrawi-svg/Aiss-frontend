@@ -114,7 +114,7 @@ function Edit_book() {
   return (
     <div className="min-h-screen pt-35 lg:pt-37.5 pb-10 px-4 sm:px-6">
       <div className="max-w-300 mx-auto flex flex-col lg:flex-row gap-7.5 items-start">
-        <aside className="hidden lg:block w-62.5 shrink-0 bg-white p-5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]">
+        <aside className="block w-full lg:w-62.5 lg:shrink-0 bg-white p-5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]">
           <h3 className="text-primary text-lg font-bold mb-5">القائمة</h3>
           <ul className="flex flex-col gap-2.5 p-0 m-0 list-none">
             <li>

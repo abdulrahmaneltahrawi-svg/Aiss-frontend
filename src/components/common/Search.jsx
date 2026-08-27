@@ -184,7 +184,7 @@ export default function Search() {
         }}
         className={
           open
-            ? "block absolute top-[-15%] right-10 w-70 p-[10px_20px] rounded-[25px] border border-[#ddd] shadow-[0_5px_15px_rgba(0,0,0,0.1)] z-100 bg-white mr-r-12.5 max-[600px]:top-full max-[600px]:right-25"
+            ? "block absolute top-[-15%] right-10 w-70 p-[10px_20px] rounded-[25px] border border-[#ddd] shadow-[0_5px_15px_rgba(0,0,0,0.1)] z-100 bg-white mr-r-12.5 max-[600px]:fixed max-[600px]:top-0 max-[600px]:left-0 max-[600px]:right-0 max-[600px]:w-auto max-[600px]:z-10050 max-[600px]:rounded-none max-[600px]:border-x-0 max-[600px]:border-t-0 max-[600px]:border-b max-[600px]:border-b-[#ddd] max-[600px]:p-3 max-[600px]:pr-11 max-[600px]:text-[14px] max-[600px]:shadow-[0_4px_12px_rgba(0,0,0,0.12)] max-[600px]:my-0 max-[600px]:mx-0"
             : "hidden"
         }
         placeholder="ابحث عن ما تريد..."
@@ -193,7 +193,7 @@ export default function Search() {
       {open && query.trim().length >= 2 && (
         <ul
           id="search-suggestions"
-          className="block absolute top-[calc(100%+25px)] left-1/5 -translate-x-1/2 w-62.5 max-w-[90vw] bg-white border border-[#ddd] rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.15)] z-98 list-none max-h-75 overflow-y-auto p-1.25 m-0"
+          className="block absolute top-[calc(100%+25px)] left-1/5 -translate-x-1/2 w-62.5 max-w-[90vw] bg-white border border-[#ddd] rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.15)] z-98 list-none max-h-75 overflow-y-auto p-1.25 m-0 max-[600px]:fixed max-[600px]:top-12 max-[600px]:left-0 max-[600px]:right-0 max-[600px]:w-auto max-[600px]:max-w-none max-[600px]:max-h-[70vh] max-[600px]:translate-x-0 max-[600px]:rounded-none max-[600px]:border-x-0 max-[600px]:border-t-0 max-[600px]:p-1.5 max-[600px]:z-10045 max-[600px]:shadow-[0_6px_16px_rgba(0,0,0,0.15)]"
         >
           {searching ? (
             <li className="p-3 text-center text-[14px] text-[#666]">

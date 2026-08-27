@@ -69,7 +69,7 @@ export default function Creator() {
           </div>
 
           {/* الصف الثاني */}
-          <div className="flex justify-center gap-20 w-full">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-20 w-full">
             <div className="relative text-center bg-white p-6.25 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-[0.4s] ease-[cubic-bezier(0.165,0.84,0.44,1)] overflow-hidden hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]" data-aos="fade-right" data-aos-delay="200">
               <img
                 src="assets/creator/WhatsApp Image 2026-04-30 at 5.29.44 PM.jpeg"

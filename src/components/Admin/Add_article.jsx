@@ -361,7 +361,7 @@ async function saveArticle(e) {
 
         {/* القائمة */}
 
-        <aside className="hidden lg:block w-62.5 shrink-0 bg-white p-5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]">
+        <aside className="block w-full lg:w-62.5 lg:shrink-0 bg-white p-5 rounded-[15px] shadow-[0_4px_15px_rgba(0,0,0,0.06)]">
 
           <h3 className="text-primary text-lg font-bold mb-5">
             القائمة

@@ -3,6 +3,24 @@ import { Link } from "react-router-dom";
 import AuthModals from "./button.jsx";
 import Search from "./Search.jsx";
 
+// سهم صغير (رأس مثلث فقط) — يتحول للون النص ويدور 180° عند فتح القائمة
+function NavArrow({ open }) {
+  return (
+    <svg
+      className={`w-5 h-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
@@ -36,22 +54,6 @@ function Header() {
   // كلاس العناصر الأب (التي لها قائمة فرعية): النص يمين والسهم في أقصى يسار الناف بار
   const navParentClass =
     "flex w-full items-center justify-between no-underline text-[#333] p-[5px] transition-all duration-300 text-[25px] mt-[15px] hover:text-accent max-[767px]:text-[18px] max-[767px]:mt-[10px] max-[767px]:p-[12px]";
-
-  // سهم صغير (رأس مثلث فقط) — يتحول للون النص ويدور 180° عند فتح القائمة
-  const NavArrow = ({ open }) => (
-    <svg
-      className={`w-5 h-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
-  );
 
   const navSubLinkClass =
     "block no-underline text-[18px] mt-[5px] text-[#555] p-[5px] transition-all duration-300 hover:text-accent";
@@ -99,13 +101,24 @@ function Header() {
         <Search />
       </div>
 
+      {/* ظل معتم على يسار القائمة — الضغط عليه يُغلق الناف بار */}
+      <div
+        className={`fixed inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-[2px] transition-opacity duration-300 z-9000 ${
+          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* درج جانبي يأخذ اليمين بارتفاع الصفحة كاملاً */}
       <nav
-        className={`${
-          menuOpen ? "block animate-slide-from-right" : "hidden"
-        } fixed top-21.25 right-5 bg-white border border-[#ddd] shadow-[0_4px_12px_rgba(0,0,0,0.15)] rounded-lg p-2.5 min-w-125 z-10000 max-h-[90vh] overflow-y-auto max-[767px]:min-w-0 max-[767px]:w-[90%] max-[767px]:right-[5%] max-[767px]:left-[5%] max-[767px]:top-20 max-[767px]:max-h-[80vh]`}
+        className={`fixed top-0 bottom-0 right-0 h-full bg-white shadow-[-2px_0_20px_rgba(0,0,0,0.15)] p-5 z-10050 overflow-y-auto transition-transform duration-300 ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        } w-122.5 max-[420px]:w-[85%]`}
         id="header-nav"
+        onClick={() => setMenuOpen(false)}
       >
-        <ul className="list-none flex flex-col gap-2.5 p-0 m-0 font-bold mr-6.25">
+        <ul className="list-none flex flex-col gap-2 p-0 m-0 font-bold mr-6.25">
           <li>
             <Link to="/" className={navLinkClass}>الصفحة الرئيسية</Link>
           </li>

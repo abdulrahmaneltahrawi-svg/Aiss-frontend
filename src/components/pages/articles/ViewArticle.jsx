@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 import Header from "../../common/Header.jsx";
 import Footer from "../../common/Footer.jsx";
 import Comment from "../../common/Comment.jsx";
+import Card from "../../common/Card.jsx";
 
 
 
@@ -12,6 +13,9 @@ import Comment from "../../common/Comment.jsx";
 const API_URL = "";
 
 const FALLBACK_IMG = "assets/imge/0006.jpg";
+
+// عدد المقالات ذات الصلة
+const RELATED_ARTICLES_COUNT = 3;
 
 // معالجة مسارات الصور داخل محتوى HTML
 function fixContentImages(html) {
@@ -53,6 +57,9 @@ export default function ViewArticle() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [relatedArticles, setRelatedArticles] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
 
 
   useEffect(() => {
@@ -187,6 +194,79 @@ export default function ViewArticle() {
 
     loadArticle();
   }, [id, source]);
+
+  // ==========================================
+  // المقالات ذات الصلة - عبر الـ Endpoint
+  // GET /api/tags/{id}/articles
+  // ==========================================
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRelated() {
+      const tags = article && article.tags;
+
+      if (!tags || tags.length === 0) {
+        setRelatedArticles([]);
+        return;
+      }
+
+      setRelatedLoading(true);
+
+      // جمع مقالات من الوسوم المختلفة حتى نكتمل 3 مقالات
+      const collected = [];
+      const seen = new Set();
+
+      for (const tag of tags) {
+        if (collected.length >= RELATED_ARTICLES_COUNT) break;
+
+        try {
+          const response = await fetch(`/api/tags/${tag.id}/articles`, {
+            method: "GET",
+            headers: { Accept: "application/json" },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || cancelled) return;
+
+          const list =
+            (data && data.articles) ||
+            (data && data.data) ||
+            (Array.isArray(data) ? data : []);
+
+          for (const a of list) {
+            if (collected.length >= RELATED_ARTICLES_COUNT) break;
+            // استبعاد المقال الحالي والمكرر
+            if (a.id == article.id || seen.has(a.id)) continue;
+            seen.add(a.id);
+            collected.push(a);
+          }
+        } catch (err) {
+          console.error("Error fetching related articles:", err);
+        }
+      }
+
+      if (cancelled) return;
+
+      // تجهيز الصور
+      const mapped = collected.slice(0, RELATED_ARTICLES_COUNT).map((a) => ({
+        ...a,
+        image:
+          a.cover_image_url ||
+          fixStoragePath(a.cover_image || a.image || ""),
+        title: a.title || "",
+      }));
+
+      setRelatedArticles(mapped);
+      setRelatedLoading(false);
+    }
+
+    loadRelated();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [article]);
 
   // ==========================================
   // Loading
@@ -336,6 +416,31 @@ export default function ViewArticle() {
             <Comment  source={source} id={id ? id.split("-")[0] : ""} />
           </div>
         </div>
+
+        {/* مقالات ذات صلة */}
+        {!relatedLoading && relatedArticles.length > 0 && (
+          <div className="max-w-350 mx-auto my-8">
+            <div className="section-title-bar">
+              <p>
+                <span className="text-accent">مقالات </span>ذات صلة
+              </p>
+            </div>
+
+            <div className="cards-grid">
+              {relatedArticles.map((item, idx) => (
+                <Card
+                  key={item.id ?? idx}
+                  id={item.id ?? idx}
+                  title={item.title}
+                  image={item.image}
+                  fallbackImage="assets/magazine/IMG_1325.webp"
+                  href={`/views?id=${item.id}&source=article`}
+                  btnText="عرض المدونة"
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />

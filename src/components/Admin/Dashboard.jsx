@@ -198,7 +198,7 @@ function Dashboard() {
 
           <Link
             to="/"
-            className="flex items-center justify-center gap-2 mt-6 py-3 px-5 bg-primary text-white no-underline rounded-[12px] font-bold text-center transition-all duration-300 hover:bg-primary-dark hover:scale-[1.02]"
+            className="flex items-center justify-center gap-2 mt-6 py-3 px-5 bg-primary text-white no-underline rounded-xl font-bold text-center transition-all duration-300 hover:bg-primary-dark hover:scale-[1.02]"
           >
             الرجوع للموقع
           </Link>
@@ -208,11 +208,11 @@ function Dashboard() {
         <main className="flex-1 w-full flex flex-col gap-7.5">
 
           {/* بطاقة الترحيب */}
-          <div className="rounded-[20px] overflow-hidden bg-gradient-to-l from-primary to-primary-dark text-white shadow-[0_10px_30px_rgba(35,82,135,0.25)] relative">
+          <div className="rounded-[20px] overflow-hidden bg-linear-to-l from-primary to-primary-dark text-white shadow-[0_10px_30px_rgba(35,82,135,0.25)] relative">
             <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-white/10" />
             <div className="absolute -bottom-16 -right-6 w-56 h-56 rounded-full bg-white/10" />
             <div className="relative p-7.5 flex flex-col sm:flex-row sm:items-center gap-5">
-              <span className="w-16 h-16 shrink-0 flex items-center justify-center rounded-[16px] bg-white/15 text-3xl font-extrabold ring-2 ring-white/40">
+              <span className="w-16 h-16 shrink-0 flex items-center justify-center rounded-2xl bg-white/15 text-3xl font-extrabold ring-2 ring-white/40">
                 {firstLetter}
               </span>
               <div className="flex-1">
@@ -231,7 +231,7 @@ function Dashboard() {
             {STAT_CARDS.map((card) => (
               <div
                 key={card.key}
-                className="bg-white rounded-[16px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] p-5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4"
+                className="bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] p-5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4"
               >
    
                 <div className="min-w-0">
@@ -250,7 +250,7 @@ function Dashboard() {
 
 
           {/* الوصول السريع */}
-          <div className="bg-white p-6.25 rounded-[16px] shadow-[0_4px_15px_rgba(0,0,0,0.05)]">
+          <div className="bg-white p-6.25 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)]">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-primary text-lg font-extrabold"> وصول سريع</h3>
             </div>
@@ -272,7 +272,7 @@ function Dashboard() {
           </div>
 
           {/* آخر النشاطات */}
-          <div className="bg-white p-6.25 rounded-[16px] shadow-[0_4px_15px_rgba(0,0,0,0.05)]">
+          <div className="bg-white p-6.25 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)]">
             <h3 className="text-primary text-lg font-extrabold mb-5"> آخر النشاطات</h3>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">

@@ -72,7 +72,7 @@
 
   /* بانر الهيدر في جميع الصفحات */
   .page-hero {
-    @apply relative w-full h-125 flex justify-center items-center overflow-hidden mt-21.25;
+    @apply relative w-full h-90 flex justify-center items-center overflow-hidden mt-21.25;
   }
 
   /* صورة خلفية البانر */

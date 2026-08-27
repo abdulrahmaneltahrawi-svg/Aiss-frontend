@@ -60,6 +60,23 @@ export default function Articles() {
     }
   }, []);
 
+  // Check if user is admin
+  useEffect(() => {
+    fetch("/api/me", {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const user = data.user || data;
+        if (user && (user.role === "admin" || user.can_add_article == 1)) {
+          setIsAdmin(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Fetch blogs
   useEffect(() => {
     async function loadBlogs() {

@@ -295,12 +295,14 @@ export default function ViewArticle() {
           {article.tags && article.tags.length > 0 && (
             <div className="px-5 pt-3 flex flex-wrap gap-2 justify-end">
               {article.tags.map((tag) => (
-                <span
+                <Link
                   key={tag.id}
-                  className="bg-sidebar-bg text-accent px-3 py-1 rounded-full text-sm font-bold"
+                  to={`/tag-articles?id=${tag.id}&name=${encodeURIComponent(tag.name || "")}`}
+                  title={`عرض مقالات الوسم ${tag.name}`}
+                  className="bg-sidebar-bg text-accent px-3 py-1 rounded-full text-sm font-bold no-underline transition-all duration-200 hover:bg-accent hover:text-white"
                 >
                   #{tag.name}
-                </span>
+                </Link>
               ))}
             </div>
           )}

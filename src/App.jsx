@@ -12,6 +12,7 @@ import Articles from "./components/pages/articles/articles.jsx";
 import Books from "./components/pages/books/Books.jsx";
 import Code from "./components/pages/articles/Code.jsx";
 import ViewArticle from "./components/pages/articles/ViewArticle.jsx";
+import TagArticles from "./components/pages/articles/TagArticles.jsx";
 import Conferences from "./components/pages/events/Conferences.jsx";
 import FlipBook from "./components/pages/books/FlipBook.jsx";
 import Medal from "./components/pages/medal/Medal.jsx";
@@ -72,6 +73,7 @@ function App() {
         <Route path="/manuals" element={<Books />} />
         <Route path="/cods" element={<Code />} />
         <Route path="/views" element={<ViewArticle />} />
+        <Route path="/tag-articles" element={<TagArticles />} />
         <Route path="/flipbook" element={<FlipBook />} />
         <Route path="/conference" element={<Conferences />} />
         <Route path="/conferences" element={<Conferences />} />

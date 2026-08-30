@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function Footer() {
   return (
     <footer className="bg-[#ececec]">
-      <div className="flex justify-around items-start p-[40px_20px] bg-[#ececec] text-[#444] m-0 auto max-[600px]:flex-col max-[600px]:items-center max-[600px]:w-full max-[600px]:text-[12px]">
+      <div className="flex justify-around items-start p-[40px_20px] bg-[#ececec] text-[#444] m-0 auto max-[600px]:flex-col max-[600px]:items-center max-[600px]:w-full max-[600px]:text-[15px]">
         <div className="flex-1 min-w-62.5 text-center mb-5">
           <h3 className="mb-5 text-[1.5rem] border-b-2 border-b-[#23528754] inline-block pb-1.25 text-[#222] max-[600px]:w-full">
             بيانات التواصل
@@ -22,13 +22,13 @@ function Footer() {
             <li className="mb-mt-2.5 mt-mt-2.5">
               <a
                 href="https://maps.app.goo.gl/AS11VhiknLbc2a1r5"
-                className="text-[#444] hover:text-primary hover:cursor-pointer flex items-center justify-center gap-2 no-underline leading-[1.8] max-[768px]:text-white max-[768px]:justify-center"
+                className="text-[#444] hover:text-primary hover:cursor-pointer flex items-center justify-center gap-2 no-underline leading-[1.8] max-[768px]:justify-center"
               >
                 <img
                   src="/assets/icons/location.webp"
                   alt="location-img"
                   loading="lazy"
-                  className="w-4.5 align-middle ml-1.25 max-[768px]:w-5 max-[768px]:brightness-0 max-[768px]:invert"
+                  className="w-5 align-middle ml-1.25 max-[768px]:w-6"
                 />
                 <span className="max-[768px]:hidden">Address: United Arab Emirates</span>
               </a>
@@ -75,7 +75,7 @@ function Footer() {
                 <img
                   src="/assets/icons/facebook.webp"
                   alt="facebook-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -85,7 +85,7 @@ function Footer() {
                 <img
                   src="/assets/icons/email.webp"
                   alt="email-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -95,7 +95,7 @@ function Footer() {
                 <img
                   src="/assets/icons/telegram.webp"
                   alt="telegram-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -108,7 +108,7 @@ function Footer() {
                 <img
                   src="/assets/icons/linkedin.webp"
                   alt="linkedin-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -118,7 +118,7 @@ function Footer() {
                 <img
                   src="/assets/icons/youtube.webp"
                   alt="youtube-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -131,7 +131,7 @@ function Footer() {
                 <img
                   src="/assets/icons/whatsapp.webp"
                   alt="whatsapp-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -141,7 +141,7 @@ function Footer() {
                 <img
                   src="/assets/icons/twitter.webp"
                   alt="twitter-logo"
-                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-3.25"
+                  className="w-7.5 h-auto hover:scale-[1.2] max-[600px]:w-10"
                   loading="lazy"
                 />
               </a>
@@ -165,7 +165,7 @@ function Footer() {
           <img
             src="/assets/icons/visa.webp"
             alt="visa-logo"
-            className="w-7.5 h-auto align-middle"
+            className="w-7.5 h-auto align-middle max-[600px]:w-9"
             loading="lazy"
           />
         </p>
